@@ -26,7 +26,7 @@ import java.util.List;
  * 
  * 
  */
-public class ViewPagerAdapter1 extends PagerAdapter {
+public class GuideViewAdapter extends PagerAdapter {
 
 	// 界面列表
 	private List<View> views;
@@ -34,7 +34,7 @@ public class ViewPagerAdapter1 extends PagerAdapter {
 
 	private static final String SHAREDPREFERENCES_NAME = "first_pref";
 
-	public ViewPagerAdapter1(List<View> views2, Activity activity) {
+	public GuideViewAdapter(List<View> views2, Activity activity) {
 		this.views = views2;
 		this.activity = activity;
 	}

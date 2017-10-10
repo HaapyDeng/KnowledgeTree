@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.max_plus.knowledgetree.adapter.ViewPagerAdapter1;
+import com.max_plus.knowledgetree.adapter.GuideViewAdapter;
 import com.max_plus.knowledgetree.R;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
 public class GuideActivity extends Activity implements OnPageChangeListener {
 
     private ViewPager vp;
-    private ViewPagerAdapter1 vpAdapter;
+    private GuideViewAdapter vpAdapter;
     private List<View> views;
 
     // 底部小点图片
@@ -60,7 +60,7 @@ public class GuideActivity extends Activity implements OnPageChangeListener {
 //        views.add(inflater.inflate(R.layout.what_new_three, null));
 
         // 初始化Adapter
-        vpAdapter = new ViewPagerAdapter1(views, this);
+        vpAdapter = new GuideViewAdapter(views, this);
 
         vp = (ViewPager) findViewById(R.id.viewpager);
         vp.setAdapter(vpAdapter);

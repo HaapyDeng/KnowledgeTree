@@ -3,6 +3,11 @@
     <string name="splash_text">知识树，个性提高新起点</string>
     <string name="version_number">版本号：a_0.1.0</string>
     <string name="title_activity_login">Sign in</string>
+    <string name="user_name_hint">输入知识树账号</string>
+    <string name="user_password_hint">输入密码</string>
+    <string name="login">登录</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="regist_user">注册账号</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
