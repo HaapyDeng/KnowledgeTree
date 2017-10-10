@@ -8,6 +8,12 @@
     <string name="login">登录</string>
     <string name="forget_password">忘记密码</string>
     <string name="regist_user">注册账号</string>
+    <string name="register">注册</string>
+    <string name="input_phoneoremail">输入手机号或邮箱账号</string>
+    <string name="set_password">设置密码</string>
+    <string name="input_code">输入验证码</string>
+    <string name="send_code">发送验证码</string>
+    <string name="reset_password">重设密码</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

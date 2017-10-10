@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_4"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/textview_border"
+        android:background="@drawable/button_border"
         android:gravity="center"
         android:text="@string/version_number"
         android:textColor="#FFFFFFFF"
