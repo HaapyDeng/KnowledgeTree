@@ -3,14 +3,26 @@ package com.max_plus.knowledgetree.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
+import com.max_plus.knowledgetree.tools.NetworkUtils;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
+
 
 public class LoginActivity extends Activity implements View.OnClickListener {
 
@@ -36,11 +48,6 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     }
 
     private void initView() {
-        et_user = findViewById(R.id.et_userName);
-        userName = et_user.toString().trim();
-
-        et_password = findViewById(R.id.et_password);
-        password = et_password.toString().trim();
 
         btn_login = findViewById(R.id.btn_login);
         btn_login.setOnClickListener(this);
@@ -57,20 +64,76 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_login:
+                et_user = findViewById(R.id.et_userName);
+                userName = et_user.getText().toString().trim();
+
+                et_password = findViewById(R.id.et_password);
+                password = et_password.getText().toString().trim();
+
+                doLogin(userName, password);
                 break;
             case R.id.tv_fpassword:
                 Intent intent2 = new Intent();
                 intent2.setClass(this, ResetPasswordActivity.class);
                 startActivity(intent2);
-
                 break;
             case R.id.tv_regist:
                 Intent intent1 = new Intent();
                 intent1.setClass(this, RegisterActivity.class);
                 startActivity(intent1);
-
                 break;
         }
+    }
+
+    private void doLogin(String userName, String password) {
+        Log.d("user==>>>", userName);
+        if (userName.length() == 0) {
+            Toast.makeText(this, R.string.userName_not_null, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (password.length() == 0) {
+            Toast.makeText(this, R.string.password_not_null, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        //判断账号是否合法
+        if (NetworkUtils.isMobileNO(userName) == false && NetworkUtils.isEmail(userName) == false) {
+
+            Toast.makeText(this, R.string.please_input_right_user, Toast.LENGTH_SHORT).show();
+            return;
+
+        }
+        //判断网络是否正常
+        if (NetworkUtils.checkNetWork(this) == false) {
+            Toast.makeText(this, R.string.isNotNetWork, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        final String url = NetworkUtils.returnUrl() + NetworkUtils.returnLoginApi();
+        Log.d("url==>>>>>>", url);
+        AsyncHttpClient client = new AsyncHttpClient();
+        final RequestParams params = new RequestParams();
+        params.put("mobileoremail", userName);
+        params.put("password", password);
+        client.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+//                super.onSuccess(statusCode, headers, response);
+                try {
+                    Log.d("code==>>", String.valueOf(statusCode));
+                    Log.d("response==>>", response.toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                Log.d("code==>>", String.valueOf(statusCode));
+                Log.d("response==>>", errorResponse.toString());
+            }
+        });
     }
 
     private void getShared(String username, String password) {

@@ -14,6 +14,10 @@
     <string name="input_code">输入验证码</string>
     <string name="send_code">发送验证码</string>
     <string name="reset_password">重设密码</string>
+    <string name="please_input_right_user">请输入正确的手机号码或者邮箱</string>
+    <string name="userName_not_null">账号不能为空</string>
+    <string name="password_not_null">密码不能为空</string>
+    <string name="isNotNetWork">网络连接错误，请检查手机网络再试！</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
