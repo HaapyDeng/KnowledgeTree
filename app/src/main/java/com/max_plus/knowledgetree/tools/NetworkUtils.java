@@ -122,12 +122,17 @@ public class NetworkUtils {
 
     //手机验证码接口
     public static String returnPhoneCodeApi() {
+        return "/public/setmsg";
+    }
+
+    //验证手机号或邮箱是否存在
+    public static String returnVerifyUser() {
         return "/ghshun/user/cache";
     }
 
     //邮箱验证码接口
     public static String returnEmailCodeApi() {
-        return "/ghshun/user/cache";
+        return "/public/setmail";
     }
 
     //获取个人详细信息

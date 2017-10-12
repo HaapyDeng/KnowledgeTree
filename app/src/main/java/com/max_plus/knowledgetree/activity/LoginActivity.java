@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,10 +17,10 @@ import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
 import com.max_plus.knowledgetree.tools.NetworkUtils;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
+
 
 
 public class LoginActivity extends Activity implements View.OnClickListener {
@@ -85,7 +84,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         }
     }
 
-    private void doLogin(String userName, String password) {
+    private void doLogin(final String userName, final String password) {
         Log.d("user==>>>", userName);
         if (userName.length() == 0) {
             Toast.makeText(this, R.string.userName_not_null, Toast.LENGTH_SHORT).show();
@@ -117,10 +116,39 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         client.post(url, params, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-//                super.onSuccess(statusCode, headers, response);
+                super.onSuccess(statusCode, headers, response);
                 try {
                     Log.d("code==>>", String.valueOf(statusCode));
                     Log.d("response==>>", response.toString());
+                    int code;
+                    String token, message;
+                    code = response.getInt("code");
+                    if (statusCode == 200) {
+                        if (code == 1) {
+                            message = response.getString("message");
+                            Toast.makeText(LoginActivity.this, message, Toast.LENGTH_LONG).show();
+                            return;
+                        } else if (code == 0) {
+                            message = response.getString("message");
+                            token = response.getJSONObject("data").getString("token");
+                            Log.d("token==>>>>", token);
+                            //保存用户信息到SharedPreferences
+                            SharedPreferences mySharedPreferences = getSharedPreferences("user",
+                                    Activity.MODE_PRIVATE);
+                            SharedPreferences.Editor edit = mySharedPreferences.edit();
+                            edit.putString("token", token);
+                            edit.putString("username", userName);
+                            edit.putString("password", password);
+                            edit.commit();
+                        } else {
+                            Toast.makeText(LoginActivity.this, R.string.sever_busy, Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                    } else {
+                        Toast.makeText(LoginActivity.this, R.string.sever_busy, Toast.LENGTH_LONG).show();
+                        return;
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

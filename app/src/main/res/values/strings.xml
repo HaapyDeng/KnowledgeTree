@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">KnowledgeTree</string>
+    <string name="app_name">知识树</string>
     <string name="splash_text">知识树，个性提高新起点</string>
     <string name="version_number">版本号：a_0.1.0</string>
     <string name="title_activity_login">Sign in</string>
@@ -18,6 +18,7 @@
     <string name="userName_not_null">账号不能为空</string>
     <string name="password_not_null">密码不能为空</string>
     <string name="isNotNetWork">网络连接错误，请检查手机网络再试！</string>
+    <string name="sever_busy">服务器繁忙，请稍后再试</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
