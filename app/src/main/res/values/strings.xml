@@ -17,8 +17,15 @@
     <string name="please_input_right_user">请输入正确的手机号码或者邮箱</string>
     <string name="userName_not_null">账号不能为空</string>
     <string name="password_not_null">密码不能为空</string>
+    <string name="verify_code_not_null">验证码不能为空</string>
     <string name="isNotNetWork">网络连接错误，请检查手机网络再试！</string>
     <string name="sever_busy">服务器繁忙，请稍后再试</string>
+    <string name="reg_success">注册成功</string>
+    <string name="verfy_error_or_outtime">验证码错误或过期</string>
+    <string name="reg_fail">注册失败</string>
+    <string name="user_exist">手机号、邮箱已经注册</string>
+    <string name="user_form_error">手机号格式不对</string>
+    <string name="parm_lost">缺少参数</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

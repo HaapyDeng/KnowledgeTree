@@ -2,6 +2,7 @@ package com.max_plus.knowledgetree.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -21,6 +21,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
+
+import static com.max_plus.knowledgetree.tools.AllToast.doToast;
 
 public class RegisterActivity extends Activity implements View.OnClickListener, TextWatcher {
     private ImageView back;
@@ -68,27 +70,112 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 break;
 
             case R.id.btn_register:
+                doRegister(userName, code, password);
                 break;
         }
 
     }
 
-    private void doVerifyUser(final String userName) {
+    private void doRegister(String userName, String code, String password) {
         Log.d("user==>>>", userName);
         if (userName.length() == 0) {
-            Toast.makeText(this, R.string.userName_not_null, Toast.LENGTH_SHORT).show();
+            doToast(RegisterActivity.this, getResources().getString(R.string.userName_not_null));
+            return;
+        }
+        et_code = findViewById(R.id.et_code);
+        code = et_code.getText().toString().trim();
+        if (code.length() == 0) {
+            doToast(RegisterActivity.this, getResources().getString(R.string.verify_code_not_null));
+            return;
+        }
+        if (password.length() == 0) {
+            doToast(RegisterActivity.this, getResources().getString(R.string.password_not_null));
             return;
         }
         //判断账号是否合法
         if (NetworkUtils.isMobileNO(userName) == false && NetworkUtils.isEmail(userName) == false) {
+            doToast(RegisterActivity.this, getResources().getString(R.string.please_input_right_user));
+            return;
+        }
+        //判断网络是否正常
+        if (NetworkUtils.checkNetWork(this) == false) {
+            doToast(RegisterActivity.this, getResources().getString(R.string.isNotNetWork));
+            return;
+        }
+        String url = NetworkUtils.returnUrl() + NetworkUtils.returnRegistApi();
+        Log.d("url==>>", url);
+        AsyncHttpClient client3 = new AsyncHttpClient();
+        RequestParams params3 = new RequestParams();
+        if (NetworkUtils.isMobileNO(userName)) {
+            params3.put("mobile", userName);
+        } else {
+            params3.put("email", userName);
+        }
+        params3.put("code", code);
+        params3.put("password", password);
+        client3.post(url, params3, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                int repCode;
+                String rspMmessage;
+                try {
+                    repCode = response.getInt("code");
+                    switch (repCode) {
+                        case 0:
+                            rspMmessage = getResources().getString(R.string.reg_success);
+                            doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                        case 1:
+                            rspMmessage = getResources().getString(R.string.verfy_error_or_outtime);
+                            doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                        case 2:
+                            rspMmessage = getResources().getString(R.string.reg_fail);
+                            doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                        case 3:
+                            rspMmessage = getResources().getString(R.string.user_form_error);
+                            doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                        case 4:
+                            rspMmessage = getResources().getString(R.string.user_exist);
+                            doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                        case 5:
+                            rspMmessage = getResources().getString(R.string.parm_lost);
+                            doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                    }
 
-            Toast.makeText(this, R.string.please_input_right_user, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d("response==>>", response.toString());
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+            }
+        });
+    }
+
+    private void doVerifyUser(final String userName) {
+        Log.d("user==>>>", userName);
+        if (userName.length() == 0) {
+            doToast(RegisterActivity.this, getResources().getString(R.string.userName_not_null));
+            return;
+        }
+        //判断账号是否合法
+        if (NetworkUtils.isMobileNO(userName) == false && NetworkUtils.isEmail(userName) == false) {
+            doToast(RegisterActivity.this, getResources().getString(R.string.please_input_right_user));
             return;
 
         }
         //判断网络是否正常
         if (NetworkUtils.checkNetWork(this) == false) {
-            Toast.makeText(this, R.string.isNotNetWork, Toast.LENGTH_SHORT).show();
+            doToast(RegisterActivity.this, getResources().getString(R.string.isNotNetWork));
             return;
         }
         final String url = NetworkUtils.returnUrl() + NetworkUtils.returnVerifyUser();
@@ -115,7 +202,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                             return;
                         } else if (code == 2) {
                             message = response.getString("message");
-                            doToast(message);
+                            doToast(RegisterActivity.this, message);
                             return;
                         }
                     }
@@ -132,9 +219,6 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
 
     }
 
-    private void doToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
 
     private void doGetCode(String userName) {
         final String url;
@@ -142,7 +226,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         final RequestParams params2 = new RequestParams();
         //判断网络是否正常
         if (NetworkUtils.checkNetWork(this) == false) {
-            Toast.makeText(this, R.string.isNotNetWork, Toast.LENGTH_SHORT).show();
+            doToast(RegisterActivity.this, getResources().getString(R.string.isNotNetWork));
             return;
         }
         //判断注册账号是手机还是邮箱
@@ -150,15 +234,31 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
             url = NetworkUtils.returnUrl() + NetworkUtils.returnPhoneCodeApi();
             params2.put("mobile", userName);
         } else {
-            url = NetworkUtils.returnEmailCodeApi();
-            params2.put("mail", userName);
+            url = NetworkUtils.returnUrl() + NetworkUtils.returnEmailCodeApi();
+            params2.put("email", userName);
         }
+        Log.d("url==>>>", url);
         client2.post(url, params2, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("response==>>>", response.toString());
-
+                int code;
+                String message;
+                try {
+                    code = response.getInt("code");
+                    if (code == 0) {
+                        message = response.getString("message");
+                        doToast(RegisterActivity.this, message);
+                        timer.start();
+                    } else {
+                        message = response.getString("message");
+                        doToast(RegisterActivity.this, message);
+                        return;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -168,6 +268,28 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
         });
 
     }
+
+    /**
+     * 倒计时功能
+     */
+    private CountDownTimer timer = new CountDownTimer(60000, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            if ((millisUntilFinished / 1000) <= 60) {
+                tv_getcode.setBackground(getResources().getDrawable(R.drawable.shape_corner_grey));
+                tv_getcode.setEnabled(false);
+            }
+            tv_getcode.setText((millisUntilFinished / 1000) + "秒后可重发");
+        }
+
+        @Override
+        public void onFinish() {
+            tv_getcode.setBackground(getResources().getDrawable(R.drawable.shape_corner_blue));
+            tv_getcode.setEnabled(true);
+            tv_getcode.setText("获取验证码");
+        }
+    };
 
     //实现监听输入框内容变化
     @Override

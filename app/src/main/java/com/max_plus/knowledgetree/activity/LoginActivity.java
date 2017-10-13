@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import cz.msebera.android.httpclient.Header;
 
+import static com.max_plus.knowledgetree.tools.AllToast.doToast;
 
 
 public class LoginActivity extends Activity implements View.OnClickListener {
@@ -87,23 +88,22 @@ public class LoginActivity extends Activity implements View.OnClickListener {
     private void doLogin(final String userName, final String password) {
         Log.d("user==>>>", userName);
         if (userName.length() == 0) {
-            Toast.makeText(this, R.string.userName_not_null, Toast.LENGTH_SHORT).show();
+            doToast(LoginActivity.this, getResources().getString(R.string.userName_not_null));
             return;
         }
         if (password.length() == 0) {
-            Toast.makeText(this, R.string.password_not_null, Toast.LENGTH_SHORT).show();
+            doToast(LoginActivity.this, getResources().getString(R.string.password_not_null));
             return;
         }
         //判断账号是否合法
         if (NetworkUtils.isMobileNO(userName) == false && NetworkUtils.isEmail(userName) == false) {
-
-            Toast.makeText(this, R.string.please_input_right_user, Toast.LENGTH_SHORT).show();
+            doToast(LoginActivity.this, getResources().getString(R.string.please_input_right_user));
             return;
 
         }
         //判断网络是否正常
         if (NetworkUtils.checkNetWork(this) == false) {
-            Toast.makeText(this, R.string.isNotNetWork, Toast.LENGTH_SHORT).show();
+            doToast(LoginActivity.this, getResources().getString(R.string.isNotNetWork));
             return;
         }
 
@@ -141,12 +141,12 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                             edit.putString("password", password);
                             edit.commit();
                         } else {
-                            Toast.makeText(LoginActivity.this, R.string.sever_busy, Toast.LENGTH_LONG).show();
+                            doToast(LoginActivity.this, getResources().getString(R.string.sever_busy));
                             return;
                         }
 
                     } else {
-                        Toast.makeText(LoginActivity.this, R.string.sever_busy, Toast.LENGTH_LONG).show();
+                        doToast(LoginActivity.this, getResources().getString(R.string.sever_busy));
                         return;
                     }
                 } catch (Exception e) {
