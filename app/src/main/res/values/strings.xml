@@ -26,6 +26,11 @@
     <string name="user_exist">手机号、邮箱已经注册</string>
     <string name="user_form_error">手机号格式不对</string>
     <string name="parm_lost">缺少参数</string>
+    <string name="send_sueecss">发送成功</string>
+    <string name="welcome_to_knowledge_tree">欢迎入住知识树</string>
+    <string name="start">开启个性学习新旅程</string>
+    <string name="fix_password_suc">重置密码成功</string>
+    <string name="user_not_exist">用户不存在，请检查用户名是否正确</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

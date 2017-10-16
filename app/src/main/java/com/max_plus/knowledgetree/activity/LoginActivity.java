@@ -87,6 +87,7 @@ public class LoginActivity extends Activity implements View.OnClickListener {
 
     private void doLogin(final String userName, final String password) {
         Log.d("user==>>>", userName);
+        Log.d("password==>>>", password);
         if (userName.length() == 0) {
             doToast(LoginActivity.this, getResources().getString(R.string.userName_not_null));
             return;
@@ -111,7 +112,11 @@ public class LoginActivity extends Activity implements View.OnClickListener {
         Log.d("url==>>>>>>", url);
         AsyncHttpClient client = new AsyncHttpClient();
         final RequestParams params = new RequestParams();
-        params.put("mobileoremail", userName);
+        if (NetworkUtils.isMobileNO(userName)) {
+            params.put("mobile", userName);
+        } else {
+            params.put("email", userName);
+        }
         params.put("password", password);
         client.post(url, params, new JsonHttpResponseHandler() {
             @Override
@@ -140,6 +145,10 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                             edit.putString("username", userName);
                             edit.putString("password", password);
                             edit.commit();
+                            Intent intent = new Intent();
+                            intent.setClass(LoginActivity.this, HomeActivity.class);
+                            startActivity(intent);
+                            finish();
                         } else {
                             doToast(LoginActivity.this, getResources().getString(R.string.sever_busy));
                             return;

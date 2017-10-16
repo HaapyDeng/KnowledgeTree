@@ -1,6 +1,8 @@
 package com.max_plus.knowledgetree.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -15,6 +17,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
+import com.max_plus.knowledgetree.tools.MyWarningDailog;
 import com.max_plus.knowledgetree.tools.NetworkUtils;
 
 import org.json.JSONException;
@@ -29,6 +32,7 @@ public class ResetPasswordActivity extends Activity implements View.OnClickListe
     private EditText et_user, et_code, et_setpassword;
     private Button btn_reset, tv_getcode;
     private String userName, password, code;
+    private Dialog waringDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +72,9 @@ public class ResetPasswordActivity extends Activity implements View.OnClickListe
                 doVerifyUser(userName);
                 break;
 
-            case R.id.btn_register:
+            case R.id.btn_reset:
+                et_setpassword = findViewById(R.id.et_setpassword);
+                password = et_setpassword.getText().toString().trim();
                 doResetPassword(userName, code, password);
                 break;
         }
@@ -122,8 +128,12 @@ public class ResetPasswordActivity extends Activity implements View.OnClickListe
                     repCode = response.getInt("code");
                     switch (repCode) {
                         case 0:
-                            rspMmessage = getResources().getString(R.string.reg_success);
+                            rspMmessage = getResources().getString(R.string.fix_password_suc);
                             doToast(ResetPasswordActivity.this, rspMmessage);
+                            Intent intent = new Intent();
+                            intent.setClass(ResetPasswordActivity.this, LoginActivity.class);
+                            startActivity(intent);
+                            finish();
                             break;
                         case 1:
                             rspMmessage = getResources().getString(R.string.verfy_error_or_outtime);
@@ -185,11 +195,10 @@ public class ResetPasswordActivity extends Activity implements View.OnClickListe
                     String message;
                     if (statusCode == 200) {
                         if (code == 0) {
-                            doGetCode(userName);
+                            doToast(ResetPasswordActivity.this, getResources().getString(R.string.user_not_exist));
                             return;
                         } else if (code == 2) {
-                            message = response.getString("message");
-                            doToast(ResetPasswordActivity.this, message);
+                            doGetCode(userName);
                             return;
                         }
                     }
@@ -234,8 +243,8 @@ public class ResetPasswordActivity extends Activity implements View.OnClickListe
                 try {
                     code = response.getInt("code");
                     if (code == 0) {
-                        message = response.getString("message");
-                        doToast(ResetPasswordActivity.this, message);
+                        waringDialog = new MyWarningDailog(ResetPasswordActivity.this, R.layout.warning_dialog_layout, null);
+                        waringDialog.show();
                         timer.start();
                     } else {
                         message = response.getString("message");

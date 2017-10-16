@@ -1,6 +1,8 @@
 package com.max_plus.knowledgetree.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
@@ -15,6 +17,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
+import com.max_plus.knowledgetree.tools.MyWarningDailog;
 import com.max_plus.knowledgetree.tools.NetworkUtils;
 
 import org.json.JSONException;
@@ -29,6 +32,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
     private EditText et_user, et_code, et_setpassword;
     private Button btn_register, tv_getcode;
     private String userName, password, code;
+    private Dialog waringDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,14 +74,17 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 break;
 
             case R.id.btn_register:
+                et_setpassword = findViewById(R.id.et_setpassword);
+                password = et_setpassword.getText().toString().trim();
                 doRegister(userName, code, password);
                 break;
         }
 
     }
 
-    private void doRegister(String userName, String code, String password) {
+    private void doRegister(final String userName, String code, final String password) {
         Log.d("user==>>>", userName);
+        Log.d("password==>>>", password);
         if (userName.length() == 0) {
             doToast(RegisterActivity.this, getResources().getString(R.string.userName_not_null));
             return;
@@ -121,10 +128,17 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 String rspMmessage;
                 try {
                     repCode = response.getInt("code");
+                    Log.d("repCode==>>>", String.valueOf(repCode));
                     switch (repCode) {
-                        case 0:
+                        case 0://注册成功，跳转进入注册成功页面
                             rspMmessage = getResources().getString(R.string.reg_success);
-                            doToast(RegisterActivity.this, rspMmessage);
+                            Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putString("userName", userName);
+                            bundle.putString("password", password);
+                            intent.putExtras(bundle);
+                            intent.setClass(RegisterActivity.this, RegistSuccessActivity.class);
+                            startActivity(intent);
                             break;
                         case 1:
                             rspMmessage = getResources().getString(R.string.verfy_error_or_outtime);
@@ -145,6 +159,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                         case 5:
                             rspMmessage = getResources().getString(R.string.parm_lost);
                             doToast(RegisterActivity.this, rspMmessage);
+                            break;
+                        default:
                             break;
                     }
 
@@ -248,8 +264,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                 try {
                     code = response.getInt("code");
                     if (code == 0) {
-                        message = response.getString("message");
-                        doToast(RegisterActivity.this, message);
+                        waringDialog = new MyWarningDailog(RegisterActivity.this, R.layout.warning_dialog_layout, null);
+                        waringDialog.show();
                         timer.start();
                     } else {
                         message = response.getString("message");
