@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="input_text">#FF000000</color>
+    <color name="home_maeu">#FF37C9CE</color>
+    <color name="home_maeu_off">#FF000000</color>
 </resources>

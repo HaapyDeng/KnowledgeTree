@@ -31,6 +31,10 @@
     <string name="start">开启个性学习新旅程</string>
     <string name="fix_password_suc">重置密码成功</string>
     <string name="user_not_exist">用户不存在，请检查用户名是否正确</string>
+    <string name="knowledge_tree">知识树</string>
+    <string name="test_self">自测</string>
+    <string name="find">发现</string>
+    <string name="my">我的</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -44,4 +48,7 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
