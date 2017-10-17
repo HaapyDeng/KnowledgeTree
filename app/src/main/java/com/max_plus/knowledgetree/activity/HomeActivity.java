@@ -1,19 +1,24 @@
 package com.max_plus.knowledgetree.activity;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.max_plus.knowledgetree.R;
 
+import java.util.ArrayList;
+
 public class HomeActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
     private BottomNavigationBar mBottomNavigationBar;
 
-    private FrameLayout mFrameLayout;
+    private LinearLayout mFrameLayout;
     private TreeFragment mTreeFragment;
     private SelfTestFragment mSelfTestFragment;
     private MyFragment mMyFragment;
@@ -40,26 +45,38 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
                 .setFirstSelectedPosition(0)
                 .setInActiveColor("#FF000000")
                 .initialise();
-//        setDefaultFragment();
+        setDefaultFragment();
+//        getFragments();
     }
+
+//    private ArrayList<Fragment> getFragments() {
+//        ArrayList<Fragment> fragments = new ArrayList<>();
+//        fragments.add(TreeFragment.newInstance("", ""));
+//        fragments.add(SelfTestFragment.newInstance());
+//        fragments.add(FindFragment.newInstance("", ""));
+//        fragments.add(MyFragment.newInstance());
+//        return fragments;
+//    }
+
 
     /**
      * set the default fragment
      */
     private void setDefaultFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        mTreeFragment = TreeFragment.newInstance();
+        mTreeFragment = TreeFragment.newInstance("1");
         transaction.replace(R.id.fragment_container, mTreeFragment).commit();
     }
 
 
     @Override
     public void onTabSelected(int position) {
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (position) {
             case 0:
                 if (mTreeFragment == null) {
-                    mTreeFragment = mTreeFragment.newInstance();
+                    mTreeFragment = TreeFragment.newInstance("1");
                 }
                 transaction.replace(R.id.fragment_container, mTreeFragment);
                 break;
@@ -83,7 +100,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
                 break;
             default:
                 if (mTreeFragment == null) {
-                    mTreeFragment = mTreeFragment.newInstance();
+                    mTreeFragment = TreeFragment.newInstance("1");
                 }
                 transaction.replace(R.id.fragment_container, mTreeFragment);
                 break;
@@ -94,7 +111,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
 
     @Override
     public void onTabUnselected(int position) {
-
+        Log.d("onTabUnselected....", "onTabUnselected() called with: " + "position = [" + position + "]");
     }
 
     @Override
