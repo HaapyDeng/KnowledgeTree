@@ -137,7 +137,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener, 
                             bundle.putString("userName", userName);
                             bundle.putString("password", password);
                             intent.putExtras(bundle);
-                            intent.setClass(RegisterActivity.this, RegistSuccessActivity.class);
+                            intent.setClass(RegisterActivity.this, RegisterSuccessActivity.class);
                             startActivity(intent);
                             break;
                         case 1:
