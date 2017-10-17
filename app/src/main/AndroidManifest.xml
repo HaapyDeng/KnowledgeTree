@@ -41,7 +41,9 @@
         <activity
             android:name=".activity.RegistSuccessActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.HomeActivity"></activity>
+        <activity
+            android:name=".activity.HomeActivity"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>

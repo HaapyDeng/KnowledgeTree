@@ -1,4 +1,5 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    
+    <dimen name="fixed_height_bottom_padding">5dp</dimen>
+
 </resources>

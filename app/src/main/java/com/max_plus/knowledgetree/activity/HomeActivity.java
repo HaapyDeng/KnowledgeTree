@@ -1,28 +1,23 @@
 package com.max_plus.knowledgetree.activity;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.FrameLayout;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
 import com.max_plus.knowledgetree.R;
 
-import java.util.ArrayList;
+public class HomeActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
-public class HomeActivity extends Activity implements BottomNavigationBar.OnTabSelectedListener {
+    private BottomNavigationBar mBottomNavigationBar;
 
-    BottomNavigationBar mBottomNavigationBar;
-
-    FrameLayout mFrameLayout;
+    private FrameLayout mFrameLayout;
     private TreeFragment mTreeFragment;
     private SelfTestFragment mSelfTestFragment;
     private MyFragment mMyFragment;
     private FindFragment mFindFragment;
-    private ArrayList<Fragment> fragments;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,16 +33,62 @@ public class HomeActivity extends Activity implements BottomNavigationBar.OnTabS
         mBottomNavigationBar.setMode(BottomNavigationBar.MODE_FIXED);
         mBottomNavigationBar.setBackgroundStyle(BottomNavigationBar.BACKGROUND_STYLE_STATIC);
         mBottomNavigationBar
-                .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_tree_default, getResources().getString(R.string.knowledge_tree)))
-                .addItem(new BottomNavigationItem(R.drawable.tabbar_icon_test_default, getResources().getString(R.string.test_self)))
-                .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_fund_efault, getResources().getString(R.string.find)))
-                .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_my_default, getResources().getString(R.string.my)))
+                .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_tree_default, getResources().getString(R.string.knowledge_tree)).setActiveColor("#FF37C9CE"))
+                .addItem(new BottomNavigationItem(R.drawable.tabbar_icon_test_default, getResources().getString(R.string.test_self)).setActiveColor("#FF37C9CE"))
+                .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_fund_efault, getResources().getString(R.string.find)).setActiveColor("#FF37C9CE"))
+                .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_my_default, getResources().getString(R.string.my)).setActiveColor("#FF37C9CE"))
                 .setFirstSelectedPosition(0)
+                .setInActiveColor("#FF000000")
                 .initialise();
+//        setDefaultFragment();
     }
+
+    /**
+     * set the default fragment
+     */
+    private void setDefaultFragment() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        mTreeFragment = TreeFragment.newInstance();
+        transaction.replace(R.id.fragment_container, mTreeFragment).commit();
+    }
+
 
     @Override
     public void onTabSelected(int position) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        switch (position) {
+            case 0:
+                if (mTreeFragment == null) {
+                    mTreeFragment = mTreeFragment.newInstance();
+                }
+                transaction.replace(R.id.fragment_container, mTreeFragment);
+                break;
+            case 1:
+                if (mSelfTestFragment == null) {
+                    mSelfTestFragment = SelfTestFragment.newInstance();
+                }
+                transaction.replace(R.id.fragment_container, mSelfTestFragment);
+                break;
+            case 2:
+                if (mFindFragment == null) {
+                    mFindFragment = FindFragment.newInstance("", "");
+                }
+                transaction.replace(R.id.fragment_container, mFindFragment);
+                break;
+            case 3:
+                if (mMyFragment == null) {
+                    mMyFragment = MyFragment.newInstance();
+                }
+                transaction.replace(R.id.fragment_container, mMyFragment);
+                break;
+            default:
+                if (mTreeFragment == null) {
+                    mTreeFragment = mTreeFragment.newInstance();
+                }
+                transaction.replace(R.id.fragment_container, mTreeFragment);
+                break;
+        }
+        transaction.commit();
 
     }
 
