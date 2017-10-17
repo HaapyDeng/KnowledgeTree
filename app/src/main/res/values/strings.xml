@@ -35,6 +35,9 @@
     <string name="test_self">自测</string>
     <string name="find">发现</string>
     <string name="my">我的</string>
+    <string name="nick_name">昵称</string>
+    <string name="set">设置</string>
+    <string name="change_password">修改密码</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
