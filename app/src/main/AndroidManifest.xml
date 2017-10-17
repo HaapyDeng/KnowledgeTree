@@ -39,7 +39,7 @@
             android:name=".activity.ResetPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.RegistSuccessActivity"
+            android:name=".activity.RegisterSuccessActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.HomeActivity"

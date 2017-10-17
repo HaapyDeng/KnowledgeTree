@@ -3,13 +3,11 @@ package com.max_plus.knowledgetree.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
@@ -23,7 +21,7 @@ import cz.msebera.android.httpclient.Header;
 
 import static com.max_plus.knowledgetree.tools.AllToast.doToast;
 
-public class RegistSuccessActivity extends Activity implements View.OnClickListener {
+public class RegisterSuccessActivity extends Activity implements View.OnClickListener {
     private ImageView iv_back;
     private Button btn_start;
     private String userName, password;
@@ -83,7 +81,7 @@ public class RegistSuccessActivity extends Activity implements View.OnClickListe
                     if (statusCode == 200) {
                         if (code == 1) {
                             message = response.getString("message");
-                            doToast(RegistSuccessActivity.this, message);
+                            doToast(RegisterSuccessActivity.this, message);
                             return;
                         } else if (code == 0) {
                             message = response.getString("message");
@@ -98,16 +96,16 @@ public class RegistSuccessActivity extends Activity implements View.OnClickListe
                             edit.putString("password", password);
                             edit.commit();
                             Intent intent = new Intent();
-                            intent.setClass(RegistSuccessActivity.this, HomeActivity.class);
+                            intent.setClass(RegisterSuccessActivity.this, HomeActivity.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            doToast(RegistSuccessActivity.this, getResources().getString(R.string.sever_busy));
+                            doToast(RegisterSuccessActivity.this, getResources().getString(R.string.sever_busy));
                             return;
                         }
 
                     } else {
-                        doToast(RegistSuccessActivity.this, getResources().getString(R.string.sever_busy));
+                        doToast(RegisterSuccessActivity.this, getResources().getString(R.string.sever_busy));
                         return;
                     }
                 } catch (Exception e) {
