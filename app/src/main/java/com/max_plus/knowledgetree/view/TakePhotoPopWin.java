@@ -15,23 +15,23 @@ import com.max_plus.knowledgetree.R;
  * Created by djz on 2017/10/17.
  */
 
-public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener {
+public class TakePhotoPopWin extends PopupWindow {
     private Context mContext;
 
     private View view;
 
     private TextView take_phone, choose_album, choose_system;
 
-    public TakePhotoPopWin(Context mContext) {
+    public TakePhotoPopWin(Context mContext, View.OnClickListener itemsOnClick) {
         this.view = LayoutInflater.from(mContext).inflate(R.layout.take_photo_pop, null);
         take_phone = view.findViewById(R.id.take_phone);
-        take_phone.setOnClickListener(this);
+        take_phone.setOnClickListener(itemsOnClick);
 
         choose_album = view.findViewById(R.id.choose_album);
-        choose_album.setOnClickListener(this);
+        choose_album.setOnClickListener(itemsOnClick);
 
         choose_system = view.findViewById(R.id.choose_system);
-        choose_system.setOnClickListener(this);
+        choose_system.setOnClickListener(itemsOnClick);
 
         this.setOutsideTouchable(true); // 设置外部可点击
 
@@ -73,15 +73,4 @@ public class TakePhotoPopWin extends PopupWindow implements View.OnClickListener
 
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.take_phone:
-                break;
-            case R.id.choose_album:
-                break;
-            case R.id.choose_system:
-                break;
-        }
-    }
 }

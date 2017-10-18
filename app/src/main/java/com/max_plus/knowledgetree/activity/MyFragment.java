@@ -17,8 +17,9 @@ import com.max_plus.knowledgetree.view.TakePhotoPopWin;
 public class MyFragment extends Fragment implements View.OnClickListener {
     private View mRootView;
     private ImageView takePhoto;
-    private Context mContext;
+    private Context mContext = this.getActivity();
     private WindowManager.LayoutParams params;
+    private TakePhotoPopWin takePhotoPopWin;
 
 
     // TODO: Rename and change types and number of parameters
@@ -60,7 +61,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 
     private void showPopFormBottom(View view) {
 
-        TakePhotoPopWin takePhotoPopWin = new TakePhotoPopWin(getActivity());
+        takePhotoPopWin = new TakePhotoPopWin(mContext, itemsOnclick);
         //        设置Popupwindow显示位置（从底部弹出）
         takePhotoPopWin.showAtLocation(view, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         params = getActivity().getWindow().getAttributes();
@@ -78,4 +79,20 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         });
 
     }
+
+    ////为PopupWindow三个按钮设置点击事件
+    private View.OnClickListener itemsOnclick = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            takePhotoPopWin.dismiss();
+            switch (view.getId()) {
+                case R.id.take_phone:
+                    break;
+                case R.id.choose_album:
+                    break;
+                case R.id.choose_system:
+                    break;
+            }
+        }
+    };
 }
