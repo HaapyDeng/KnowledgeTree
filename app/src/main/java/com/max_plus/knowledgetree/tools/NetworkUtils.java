@@ -142,7 +142,7 @@ public class NetworkUtils {
 
     //上传头像接口
     public static String returnUploadActorApi() {
-        return "/api/my/uploadimage";
+        return "/ghshun/member/update";
     }
 
     //获取省份列表

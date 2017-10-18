@@ -41,6 +41,7 @@
     <string name="take_photo">照相</string>
     <string name="choose_from_album">从相册选取</string>
     <string name="choose_system_avatar">选择系统头像</string>
+    <string name="upload_avatar">上传头像中</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
