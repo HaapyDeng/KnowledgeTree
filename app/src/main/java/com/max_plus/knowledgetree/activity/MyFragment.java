@@ -1,5 +1,6 @@
 package com.max_plus.knowledgetree.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.FileProvider;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,17 +24,19 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.max_plus.knowledgetree.BuildConfig;
 import com.max_plus.knowledgetree.R;
 import com.max_plus.knowledgetree.tools.AllToast;
 import com.max_plus.knowledgetree.tools.FaceUtil;
 import com.max_plus.knowledgetree.tools.LoadingDailog;
 import com.max_plus.knowledgetree.tools.NetworkUtils;
-import com.max_plus.knowledgetree.view.CircleImageView;
 import com.max_plus.knowledgetree.tools.TakePhotoPopWin;
+import com.max_plus.knowledgetree.view.CircleImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +44,10 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -60,6 +69,10 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     public static byte[] mImageData;
     private String userName, password, token;
     Dialog loadingDailog;
+    private String avatarName, mobile, email;
+    private String avatarPath;
+    private Bitmap bitmap1;
+    private TextView nickName;
 
     // TODO: Rename and change types and number of parameters
     public static MyFragment newInstance() {
@@ -80,6 +93,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     private void initView() {
         takePhoto = mRootView.findViewById(R.id.iv_takePhoto);
         takePhoto.setOnClickListener(this);
+        nickName = mRootView.findViewById(R.id.tv_nickName);
     }
 
     @Override
@@ -87,7 +101,83 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_my, container, false);
         initView();
+        initDate();
         return mRootView;
+    }
+
+    //获取个人信息
+    private void initDate() {
+        getUser();
+        String url = NetworkUtils.returnUrl() + NetworkUtils.returnUserInfoApi() + "?token=" + token;
+        Log.d("url..>>", url);
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.post(url, null, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                int code;
+                try {
+                    code = response.getInt("code");
+                    if (code == 0) {
+                        JSONObject jsonObject = response.getJSONObject("data");
+                        Log.d("userInfo==>>>>", jsonObject.toString());
+                        avatarName = jsonObject.getString("username");
+//                        mobile = jsonObject.getString("moble");
+                        email = jsonObject.getString("email");
+                        avatarPath = jsonObject.getString("face");
+                        //创建一个新线程，用于从网络上获取图片
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    getBitmap(avatarPath);
+                                    Log.d("bitmap==>>", bitmap1.toString());
+                                    takePhoto.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            takePhoto.setImageBitmap(bitmap1);
+                                            Log.d("avatarPath.....>>>", avatarPath);
+                                            nickName.setText(avatarName);
+                                        }
+                                    });
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();//开启线程
+
+                    } else {
+                        AllToast.doToast(getActivity(), getString(R.string.sever_busy));
+                        return;
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                super.onFailure(statusCode, headers, throwable, errorResponse);
+                AllToast.doToast(getActivity(), getString(R.string.sever_busy));
+                return;
+            }
+
+        });
+    }
+
+    //根据图片的URL路径来获取图片
+    public Bitmap getBitmap(String path) throws IOException {
+        URL url = new URL(path);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setConnectTimeout(5000);
+        conn.setRequestMethod("GET");
+        if (conn.getResponseCode() == 200) {
+            InputStream inputStream = conn.getInputStream();
+            bitmap1 = BitmapFactory.decodeStream(inputStream);
+            return bitmap1;
+        }
+        return null;
+
     }
 
     public void getUser() {
@@ -139,7 +229,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                     // 启动拍照,并保存到临时文件
                     Intent mIntent = new Intent();
                     mIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    mIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPictureFile));
+                    mIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", mPictureFile));
                     mIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
                     startActivityForResult(mIntent, REQUEST_CAMERA_IMAGE);
                     break;
@@ -155,6 +245,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         }
     };
 
+    //处理返回
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         Log.e("requestCode===////", String.valueOf(requestCode));
@@ -180,17 +271,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 AllToast.doToast(mContext, "请从相册里选择");
             } else {
                 cursor.close();
-//                int degree = readPictureDegree(picturePath);
-
-//                BitmapFactory.Options options = new BitmapFactory.Options();
-//                options.inSampleSize = 4;
-//                Bitmap original_bitmap = BitmapFactory.decodeFile(picturePath, options);
-//                Bitmap bitmap_photo = rotaingImageView(degree, original_bitmap);
-//                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//                bitmap_photo.compress(Bitmap.CompressFormat.JPEG, 60, baos);
-//                String img_data = Base64.encodeToString(baos.toByteArray(), Base64.DEFAULT);
             }
         }
+
 
         //从相册选取
         if (requestCode == REQUEST_PICTURE_CHOOSE && resultCode == RESULT_OK) {
@@ -214,9 +297,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             Log.d("extras==.>>>>", extras.toString());
             if (extras != null) {
                 dealPic(getActivity(), takePhoto, REQUEST_CROP_IMAGE, RESULT_OK, data);
-
-
             }
+
+
         }
 
     }
@@ -230,6 +313,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
      * @param resultCode
      * @param data
      */
+
     public void dealPic(Activity activity, ImageView imageView, int requestCode, int resultCode, Intent data) {
         if (resultCode != RESULT_OK) {
             Log.e("FaceUtil", "未完成");
@@ -252,7 +336,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 cursor.close();
             }
             // 跳转到图片裁剪页面
-            cropPicture(activity, Uri.fromFile(new File(fileSrc)));
+            cropPicture(activity, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", new File(fileSrc)));
         } else if (requestCode == REQUEST_CAMERA_IMAGE) {
             if (null == mPictureFile) {
 //                        showTip("拍照失败，请重试");
@@ -264,7 +348,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 //                    updateGallery(fileSrc);
             // 跳转到图片裁剪页面
             Log.e("FaceUtil", "跳转裁剪界面");
-            cropPicture(activity, Uri.fromFile(new File(fileSrc)));
+            cropPicture(activity, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", new File(fileSrc)));
         } else if (requestCode == REQUEST_CROP_IMAGE) {
             Log.e("FaceUtil", "图片剪裁成功！");
             // 获取返回数据
@@ -324,7 +408,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         loadingDailog = LoadingDailog.LoadingDailog(getActivity(), getString(R.string.upload_avatar));
         loadingDailog.show();
         getUser();
-        String url = NetworkUtils.returnUrl() + NetworkUtils.returnUploadActorApi() + "?" + "token=" + token;
+        String url = NetworkUtils.returnUrl() + NetworkUtils.returnGetPath();
         Log.d("url==>>>>", url);
         File file = new File(fileSrc);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -335,11 +419,13 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
         client.post(url, params, new JsonHttpResponseHandler() {
+            @SuppressLint("LongLogTag")
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 try {
                     int code = response.getInt("code");
+                    Log.d("doUploadAvatar.response....>>>", response.toString());
                     if (code == 0) {
                         try {
                             Thread.sleep(2 * 1000);
@@ -350,6 +436,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                         loadingDailog.dismiss();
                         AllToast.doToast(getActivity(), "上传头像成功");
                         imageView.setImageBitmap(mImage);
+                    } else {
+                        AllToast.doToast(getActivity(), getString(R.string.sever_busy));
+                        return;
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -360,6 +449,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                AllToast.doToast(getActivity(), getString(R.string.sever_busy));
+                return;
             }
         });
 
@@ -384,7 +475,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         innerIntent.putExtra("scaleUpIfNeeded", true);
         Log.e("FaceUtil", "图片path:" + getImagePath(activity.getApplicationContext()));
         File imageFile = new File(getImagePath(activity.getApplicationContext()));
-        innerIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+        innerIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", imageFile));
         innerIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(innerIntent, REQUEST_CROP_IMAGE);
     }

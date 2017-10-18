@@ -137,7 +137,12 @@ public class NetworkUtils {
 
     //获取个人详细信息
     public static String returnUserInfoApi() {
-        return "/my/userinfo";
+        return "/ghshun/member/info";
+    }
+
+    //上传头像图片获取地址专门接口
+    public static String returnGetPath() {
+        return "/upload.php";
     }
 
     //上传头像接口
