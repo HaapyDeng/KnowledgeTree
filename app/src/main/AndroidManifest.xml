@@ -63,7 +63,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.FixNickNameActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.FixPasswordActivity"></activity>
     </application>
 
 </manifest>

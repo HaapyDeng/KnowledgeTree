@@ -47,6 +47,10 @@
     <string name="just_10_string">仅支持输入10个字符</string>
     <string name="fix_success">修改昵称成功</string>
     <string name="fix_fail">修改失败</string>
+    <string name="input_old_password">填写旧密码</string>
+    <string name="input_new_password">填写新密码</string>
+    <string name="re_input_new_password">重复新密码</string>
+    <string name="more_than_6_string">请至少输入6位字符</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

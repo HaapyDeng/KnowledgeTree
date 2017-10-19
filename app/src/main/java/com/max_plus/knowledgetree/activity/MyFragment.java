@@ -71,7 +71,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     private String nickName, mobile, email;
     private String avatarPath;
     private Bitmap bitmap1;
-    private TextView tv_nickName, tv_fixNickeName;
+    private TextView tv_nickName, tv_fixNickeName, tv_fixPassword;
     public final static int FIX_NICK_NAME = 5;
 
     // TODO: Rename and change types and number of parameters
@@ -96,6 +96,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         tv_nickName = mRootView.findViewById(R.id.tv_nickName);
         tv_fixNickeName = mRootView.findViewById(R.id.tv_fixNickeName);
         tv_fixNickeName.setOnClickListener(this);
+        tv_fixPassword = mRootView.findViewById(R.id.tv_fixPassword);
+        tv_fixPassword.setOnClickListener(this);
     }
 
     @Override
@@ -211,6 +213,12 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 Intent nickIntent = new Intent();
                 nickIntent.setClass(getActivity(), FixNickNameActivity.class);
                 startActivityForResult(nickIntent, FIX_NICK_NAME);
+                break;
+            case R.id.tv_fixPassword:
+                Intent fpIntent = new Intent();
+                fpIntent.setClass(getActivity(), FixPasswordActivity.class);
+                startActivity(fpIntent);
+                break;
         }
     }
 
