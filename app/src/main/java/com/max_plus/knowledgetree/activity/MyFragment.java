@@ -12,10 +12,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
-import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,7 +29,6 @@ import android.widget.TextView;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
-import com.max_plus.knowledgetree.BuildConfig;
 import com.max_plus.knowledgetree.R;
 import com.max_plus.knowledgetree.tools.AllToast;
 import com.max_plus.knowledgetree.tools.FaceUtil;
@@ -69,10 +68,11 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     public static byte[] mImageData;
     private String userName, password, token;
     Dialog loadingDailog;
-    private String avatarName, mobile, email;
+    private String nickName, mobile, email;
     private String avatarPath;
     private Bitmap bitmap1;
-    private TextView nickName;
+    private TextView tv_nickName, tv_fixNickeName;
+    public final static int FIX_NICK_NAME = 5;
 
     // TODO: Rename and change types and number of parameters
     public static MyFragment newInstance() {
@@ -93,7 +93,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     private void initView() {
         takePhoto = mRootView.findViewById(R.id.iv_takePhoto);
         takePhoto.setOnClickListener(this);
-        nickName = mRootView.findViewById(R.id.tv_nickName);
+        tv_nickName = mRootView.findViewById(R.id.tv_nickName);
+        tv_fixNickeName = mRootView.findViewById(R.id.tv_fixNickeName);
+        tv_fixNickeName.setOnClickListener(this);
     }
 
     @Override
@@ -119,12 +121,20 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 try {
                     code = response.getInt("code");
                     if (code == 0) {
+                        //保存用户详情
+                        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("user", Activity.MODE_PRIVATE);
+                        SharedPreferences.Editor edit = sharedPreferences.edit();
                         JSONObject jsonObject = response.getJSONObject("data");
                         Log.d("userInfo==>>>>", jsonObject.toString());
-                        avatarName = jsonObject.getString("username");
-//                        mobile = jsonObject.getString("moble");
+                        nickName = jsonObject.getString("username");
+                        edit.putString("nickName", nickName);
+                        mobile = jsonObject.getString("mobile");
+                        edit.putString("mobile", mobile);
                         email = jsonObject.getString("email");
+                        edit.putString("email", email);
                         avatarPath = jsonObject.getString("face");
+                        edit.putString("avatarPath", avatarPath);
+                        edit.commit();
                         //创建一个新线程，用于从网络上获取图片
                         new Thread(new Runnable() {
                             @Override
@@ -137,7 +147,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                                         public void run() {
                                             takePhoto.setImageBitmap(bitmap1);
                                             Log.d("avatarPath.....>>>", avatarPath);
-                                            nickName.setText(avatarName);
+                                            if (!nickName.equals("null")) {
+                                                tv_nickName.setText(nickName);
+                                            }
                                         }
                                     });
                                 } catch (IOException e) {
@@ -188,11 +200,17 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    //主页面点击事件
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_takePhoto:
                 showPopFormBottom(mRootView);
+                break;
+            case R.id.tv_fixNickeName:
+                Intent nickIntent = new Intent();
+                nickIntent.setClass(getActivity(), FixNickNameActivity.class);
+                startActivityForResult(nickIntent, FIX_NICK_NAME);
         }
     }
 
@@ -229,7 +247,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                     // 启动拍照,并保存到临时文件
                     Intent mIntent = new Intent();
                     mIntent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
-                    mIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", mPictureFile));
+//                    mIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", mPictureFile));
+                    mIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mPictureFile));
                     mIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
                     startActivityForResult(mIntent, REQUEST_CAMERA_IMAGE);
                     break;
@@ -301,8 +320,41 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 
 
         }
+        //返回修改的昵称
+        if (requestCode == FIX_NICK_NAME && resultCode == Activity.RESULT_OK) {
+            Bundle bundle = data.getExtras();
+            nickName = bundle.getString("nikeName");
+            SharedPreferences s = getActivity().getSharedPreferences("user", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor edit = s.edit();
+            edit.putString("nickName", nickName);
+            edit.commit();
+            new Thread() {
+                @Override
+                public void run() {
+                    Message message = new Message();
+                    Bundle b = new Bundle();
+                    b.putString("nickName", nickName);
+                    message.setData(b);
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }
+            }.start();
 
+        }
     }
+
+    public Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    Bundle bundle = msg.getData();
+                    String n = bundle.getString("nickName");
+                    tv_nickName.setText(n);
+                    break;
+            }
+        }
+    };
 
     /**
      * 处理拍照、选择图片、裁剪的回调
@@ -336,7 +388,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 cursor.close();
             }
             // 跳转到图片裁剪页面
-            cropPicture(activity, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", new File(fileSrc)));
+            cropPicture(activity, Uri.fromFile(new File(fileSrc)));
+//            cropPicture(activity, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", new File(fileSrc)));
         } else if (requestCode == REQUEST_CAMERA_IMAGE) {
             if (null == mPictureFile) {
 //                        showTip("拍照失败，请重试");
@@ -348,7 +401,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 //                    updateGallery(fileSrc);
             // 跳转到图片裁剪页面
             Log.e("FaceUtil", "跳转裁剪界面");
-            cropPicture(activity, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", new File(fileSrc)));
+            cropPicture(activity, Uri.fromFile(new File(fileSrc)));
+//            cropPicture(activity, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", new File(fileSrc)));
         } else if (requestCode == REQUEST_CROP_IMAGE) {
             Log.e("FaceUtil", "图片剪裁成功！");
             // 获取返回数据
@@ -408,7 +462,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         loadingDailog = LoadingDailog.LoadingDailog(getActivity(), getString(R.string.upload_avatar));
         loadingDailog.show();
         getUser();
-        String url = NetworkUtils.returnUrl() + NetworkUtils.returnGetPath();
+        String url = NetworkUtils.returnUrlForAvatar() + NetworkUtils.returnGetPath();
         Log.d("url==>>>>", url);
         File file = new File(fileSrc);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -419,6 +473,13 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             e.printStackTrace();
         }
         client.post(url, params, new JsonHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, String responseString) {
+                super.onSuccess(statusCode, headers, responseString);
+                Log.d("doUploadAvatar.>>>", responseString);
+            }
+
             @SuppressLint("LongLogTag")
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
@@ -449,6 +510,15 @@ public class MyFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
+                loadingDailog.dismiss();
+                AllToast.doToast(getActivity(), getString(R.string.sever_busy));
+                return;
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                loadingDailog.dismiss();
                 AllToast.doToast(getActivity(), getString(R.string.sever_busy));
                 return;
             }
@@ -475,7 +545,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         innerIntent.putExtra("scaleUpIfNeeded", true);
         Log.e("FaceUtil", "图片path:" + getImagePath(activity.getApplicationContext()));
         File imageFile = new File(getImagePath(activity.getApplicationContext()));
-        innerIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", imageFile));
+        innerIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+//        innerIntent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(getActivity(), BuildConfig.APPLICATION_ID + ".fileProvider", imageFile));
         innerIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(innerIntent, REQUEST_CROP_IMAGE);
     }

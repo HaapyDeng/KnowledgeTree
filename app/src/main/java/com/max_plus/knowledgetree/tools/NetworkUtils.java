@@ -105,6 +105,10 @@ public class NetworkUtils {
 
     }
 
+    public static String returnUrlForAvatar() {
+        return "http://101.201.197.227";
+    }
+
     //登录接口
     public static String returnLoginApi() {
         return "/ghshun/user/login";
