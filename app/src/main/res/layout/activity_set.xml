@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFF5F6F7"
     android:orientation="vertical"
-    tools:context="com.max_plus.knowledgetree.activity.SetActivity">
+    tools:context="com.max_plus.knowledgetree.activity.SettingActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

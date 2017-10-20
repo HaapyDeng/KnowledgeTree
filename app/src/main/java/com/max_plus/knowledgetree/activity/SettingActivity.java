@@ -17,7 +17,7 @@ import com.max_plus.knowledgetree.tools.AllToast;
 import com.max_plus.knowledgetree.tools.CacheDataManager;
 import com.max_plus.knowledgetree.tools.MyWarningDailog;
 
-public class SetActivity extends Activity implements View.OnClickListener {
+public class SettingActivity extends Activity implements View.OnClickListener {
     private ImageView iv_back;
     private TextView tv_about, tv_check_update, tv_clear_cache, tv_cache;
     private Button btn_login_out;
@@ -80,7 +80,7 @@ public class SetActivity extends Activity implements View.OnClickListener {
                     AllToast.doToast(this, getString(R.string.no_cache));
                     return;
                 }
-                clearCacheDialog = new MyWarningDailog(SetActivity.this, R.layout.clearing_dialog_layout, null);
+                clearCacheDialog = new MyWarningDailog(SettingActivity.this, R.layout.clearing_dialog_layout, null);
                 clearCacheDialog.show();
                 new Thread(new clearCache()).start();
                 break;
@@ -98,11 +98,11 @@ public class SetActivity extends Activity implements View.OnClickListener {
 
             try {
 
-                CacheDataManager.clearAllCache(SetActivity.this);
+                CacheDataManager.clearAllCache(SettingActivity.this);
                 cache = "0.0B";
                 Thread.sleep(3000);
 
-                if (CacheDataManager.getTotalCacheSize(SetActivity.this).startsWith("0")) {
+                if (CacheDataManager.getTotalCacheSize(SettingActivity.this).startsWith("0")) {
                     handler.sendEmptyMessage(0);
                 }
 
@@ -123,7 +123,7 @@ public class SetActivity extends Activity implements View.OnClickListener {
             switch (msg.what) {
 
                 case 0:
-//                    Toast.makeText(SetActivity.this, "清理完成", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(SettingActivity.this, "清理完成", Toast.LENGTH_SHORT).show();
                     clearCacheDialog.dismiss();
                     try {
 

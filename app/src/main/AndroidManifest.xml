@@ -68,11 +68,12 @@
             android:name=".activity.FixPasswordActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.SetActivity"
+            android:name=".activity.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.AboutActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.CheckUpdateActivity"></activity>
     </application>
 
 </manifest>

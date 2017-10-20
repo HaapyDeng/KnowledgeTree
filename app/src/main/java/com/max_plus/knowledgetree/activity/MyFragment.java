@@ -223,7 +223,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.tv_set:
                 Intent setIntent = new Intent();
-                setIntent.setClass(getActivity(), SetActivity.class);
+                setIntent.setClass(getActivity(), SettingActivity.class);
                 startActivity(setIntent);
         }
     }
