@@ -71,7 +71,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     private String nickName, mobile, email;
     private String avatarPath;
     private Bitmap bitmap1;
-    private TextView tv_nickName, tv_fixNickeName, tv_fixPassword;
+    private TextView tv_nickName, tv_fixNickeName, tv_fixPassword, tv_set;
     public final static int FIX_NICK_NAME = 5;
 
     // TODO: Rename and change types and number of parameters
@@ -98,6 +98,8 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         tv_fixNickeName.setOnClickListener(this);
         tv_fixPassword = mRootView.findViewById(R.id.tv_fixPassword);
         tv_fixPassword.setOnClickListener(this);
+        tv_set = mRootView.findViewById(R.id.tv_set);
+        tv_set.setOnClickListener(this);
     }
 
     @Override
@@ -219,6 +221,10 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 fpIntent.setClass(getActivity(), FixPasswordActivity.class);
                 startActivity(fpIntent);
                 break;
+            case R.id.tv_set:
+                Intent setIntent = new Intent();
+                setIntent.setClass(getActivity(), SetActivity.class);
+                startActivity(setIntent);
         }
     }
 
@@ -473,7 +479,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         String url = NetworkUtils.returnUrlForAvatar() + NetworkUtils.returnGetPath();
         Log.d("url==>>>>", url);
         File file = new File(fileSrc);
-        Log.d("file==.....>>>", String.valueOf(file.length() / 8 / 1024)+"kb");
+        Log.d("file==.....>>>", String.valueOf(file.length() / 8 / 1024) + "kb");
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         try {

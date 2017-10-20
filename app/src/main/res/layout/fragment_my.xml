@@ -107,6 +107,7 @@
                 android:background="#FF000000" />
 
             <TextView
+                android:id="@+id/tv_set"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"

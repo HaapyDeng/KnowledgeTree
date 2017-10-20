@@ -64,7 +64,8 @@
         <activity
             android:name=".activity.FixNickNameActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.FixPasswordActivity"></activity>
+        <activity android:name=".activity.FixPasswordActivity" />
+        <activity android:name=".activity.SetActivity"></activity>
     </application>
 
 </manifest>
