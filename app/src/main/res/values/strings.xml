@@ -2,6 +2,7 @@
     <string name="app_name">知识树</string>
     <string name="splash_text">知识树，个性提高新起点</string>
     <string name="version_number">版本号：a_0.1.0</string>
+    <string name="company_info">copyright@2017 成都麦普乐科技</string>
     <string name="title_activity_login">Sign in</string>
     <string name="user_name_hint">输入知识树账号</string>
     <string name="user_password_hint">输入密码</string>

@@ -50,6 +50,9 @@ public class SetActivity extends Activity implements View.OnClickListener {
                 finish();
                 break;
             case R.id.tv_about:
+                Intent aboutIntent = new Intent();
+                aboutIntent.setClass(this, AboutActivity.class);
+                startActivity(aboutIntent);
                 break;
             case R.id.tv_check_update:
                 break;
