@@ -64,6 +64,8 @@ public class SetActivity extends Activity implements View.OnClickListener {
     private void doLoginOut() {
         Intent intent = new Intent();
         intent.setClass(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK
+                | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
     }
