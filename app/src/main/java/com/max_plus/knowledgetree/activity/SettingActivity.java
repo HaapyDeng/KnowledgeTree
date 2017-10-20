@@ -73,6 +73,9 @@ public class SettingActivity extends Activity implements View.OnClickListener {
                 startActivity(aboutIntent);
                 break;
             case R.id.tv_check_update:
+                Intent upIntent = new Intent();
+                upIntent.setClass(this, CheckUpdateActivity.class);
+                startActivity(upIntent);
                 break;
             case R.id.tv_clear_cache:
                 Log.d("cache...===>>", cache);

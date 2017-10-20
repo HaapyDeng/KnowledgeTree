@@ -57,12 +57,14 @@
     <string name="psd_not_equal">两次密码不一致</string>
     <string name="old_psd_error">原始密码错误</string>
     <string name="chek_updata">检查更新</string>
+    <string name="update_new_version">检查最新版本</string>
     <string name="about">关于</string>
     <string name="clear_cache">清除缓存</string>
     <string name="login_out">退出账号</string>
     <string name="clearing">清理中...</string>
     <string name="clear_over">已清除缓存</string>
     <string name="no_cache">目前没有缓存可清除</string>
+    <string name="download_new_version">下载最新版本</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
