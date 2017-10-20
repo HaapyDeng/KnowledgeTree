@@ -1,5 +1,6 @@
 package com.max_plus.knowledgetree.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -119,6 +120,7 @@ public class SettingActivity extends Activity implements View.OnClickListener {
 
     }
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
 
         public void handleMessage(android.os.Message msg) {
@@ -126,7 +128,6 @@ public class SettingActivity extends Activity implements View.OnClickListener {
             switch (msg.what) {
 
                 case 0:
-//                    Toast.makeText(SettingActivity.this, "清理完成", Toast.LENGTH_SHORT).show();
                     clearCacheDialog.dismiss();
                     try {
 
