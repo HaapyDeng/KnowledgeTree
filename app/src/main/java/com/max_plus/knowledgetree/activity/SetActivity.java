@@ -128,7 +128,7 @@ public class SetActivity extends Activity implements View.OnClickListener {
                     try {
 
                         tv_cache = findViewById(R.id.tv_cache);
-                        tv_cache.setText(CacheDataManager.getTotalCacheSize(SetActivity.this));
+                        tv_cache.setText(cache);
 
                     } catch (Exception e) {
 
