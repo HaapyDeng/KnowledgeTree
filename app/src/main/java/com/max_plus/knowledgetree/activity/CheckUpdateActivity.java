@@ -51,8 +51,6 @@ public class CheckUpdateActivity extends Activity implements View.OnClickListene
                 finish();
                 break;
             case R.id.iv_update:
-//                getOldVersion();
-//                getNewVersion();
 //                if (newVersion.equals(oldVersion)) {
 //                    iv_update.setBackground(getResources().getDrawable(R.drawable.my_ic_update_grey));
 //                    tv_version.setText("你的" + oldVersion + ",已是最新版本");
@@ -65,11 +63,5 @@ public class CheckUpdateActivity extends Activity implements View.OnClickListene
             case R.id.btn_update:
                 break;
         }
-    }
-
-    private void getNewVersion() {
-    }
-
-    private void getOldVersion() {
     }
 }
