@@ -1,9 +1,9 @@
 package com.max_plus.knowledgetree.activity;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -12,14 +12,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
+import com.max_plus.knowledgetree.tools.AllToast;
+import com.max_plus.knowledgetree.tools.NetworkUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import cz.msebera.android.httpclient.Header;
 
 public class FixPasswordActivity extends Activity implements View.OnClickListener, TextWatcher {
     private ImageView back;
     private TextView warning_text;
     private EditText et_old_psd, et_new_psd, et_re_new_psd;
     private Button fix_psd;
-    private String oldPassword, newPassword, rePassword;
+    private String oldPassword, newPassword, rePassword, token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,64 @@ public class FixPasswordActivity extends Activity implements View.OnClickListene
     }
 
     private void doFixPassword() {
+        Log.d("bijiao.....", "" + newPassword.equals(rePassword));
+        if (!newPassword.equals(rePassword)) {
+            AllToast.doToast(this, getString(R.string.old_and_repsd_not_equal));
+            return;
+        }
+        if (NetworkUtils.checkNetWork(this) == false) {
+            AllToast.doToast(this, getString(R.string.isNotNetWork));
+            return;
+        }
+        SharedPreferences sp = getSharedPreferences("user", Activity.MODE_PRIVATE);
+        token = sp.getString("token", "");
+        String url = NetworkUtils.returnUrl() + NetworkUtils.returnFixPassword() + "?token=" + token;
+        Log.d("url==>>>", url);
+        RequestParams params = new RequestParams();
+        AsyncHttpClient client = new AsyncHttpClient();
+        params.put("password", oldPassword);
+        params.put("newPassword", newPassword);
+        params.put("repeatPassword", rePassword);
+        client.post(url, params, new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.d("response...>", response.toString());
+                int code;
+                try {
+                    code = response.getInt("code");
+                    switch (code) {
+                        case 0:
+                            AllToast.doToast(FixPasswordActivity.this, getString(R.string.fix_psd_success));
+                            SharedPreferences s = getSharedPreferences("user", Activity.MODE_PRIVATE);
+                            SharedPreferences.Editor edit = s.edit();
+                            edit.putString("password", newPassword);
+                            edit.commit();
+                            finish();
+                            break;
+                        case 1:
+                            AllToast.doToast(FixPasswordActivity.this, getString(R.string.psd_not_equal));
+                            break;
+                        case 2:
+                            AllToast.doToast(FixPasswordActivity.this, getString(R.string.old_psd_error));
+                            break;
+                        default:
+                            AllToast.doToast(FixPasswordActivity.this, getString(R.string.sever_busy));
+                            break;
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                super.onFailure(statusCode, headers, responseString, throwable);
+                AllToast.doToast(FixPasswordActivity.this, getString(R.string.sever_busy));
+                return;
+            }
+        });
 
     }
 

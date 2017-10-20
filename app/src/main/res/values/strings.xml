@@ -51,6 +51,10 @@
     <string name="input_new_password">填写新密码</string>
     <string name="re_input_new_password">重复新密码</string>
     <string name="more_than_6_string">请至少输入6位字符</string>
+    <string name="old_and_repsd_not_equal">新密码和重复新密码不一致</string>
+    <string name="fix_psd_success">修改密码成功</string>
+    <string name="psd_not_equal">两次密码不一致</string>
+    <string name="old_psd_error">原始密码错误</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

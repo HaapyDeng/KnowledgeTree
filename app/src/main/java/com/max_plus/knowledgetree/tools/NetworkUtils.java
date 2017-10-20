@@ -105,6 +105,7 @@ public class NetworkUtils {
 
     }
 
+    //上传图片服务器
     public static String returnUrlForAvatar() {
         return "http://101.201.197.227";
     }
@@ -152,6 +153,11 @@ public class NetworkUtils {
     //上传头像接口
     public static String returnUploadActorApi() {
         return "/ghshun/member/update";
+    }
+
+    //修改密码接口
+    public static String returnFixPassword() {
+        return "/ghshun/member/reset";
     }
 
     //获取省份列表

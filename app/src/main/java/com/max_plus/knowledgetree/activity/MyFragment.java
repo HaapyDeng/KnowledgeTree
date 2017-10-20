@@ -473,6 +473,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         String url = NetworkUtils.returnUrlForAvatar() + NetworkUtils.returnGetPath();
         Log.d("url==>>>>", url);
         File file = new File(fileSrc);
+        Log.d("file==.....>>>", String.valueOf(file.length() / 8 / 1024)+"kb");
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
         try {
