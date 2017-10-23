@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -42,6 +44,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,6 +76,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
     private Bitmap bitmap1;
     private TextView tv_nickName, tv_fixNickeName, tv_fixPassword, tv_set;
     public final static int FIX_NICK_NAME = 5;
+    public final static int CHOOSE_SYSTEM_PICTURE = 6;
 
     // TODO: Rename and change types and number of parameters
     public static MyFragment newInstance() {
@@ -273,6 +277,9 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                     startActivityForResult(intent, REQUEST_PICTURE_CHOOSE);
                     break;
                 case R.id.choose_system:
+                    Intent sysIntent = new Intent();
+                    sysIntent.setClass(getActivity(), SystemPictureActivity.class);
+                    startActivityForResult(sysIntent, CHOOSE_SYSTEM_PICTURE);
                     break;
             }
         }
@@ -357,6 +364,7 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    @SuppressLint("HandlerLeak")
     public Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -476,17 +484,15 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         loadingDailog = LoadingDailog.LoadingDailog(getActivity(), getString(R.string.upload_avatar));
         loadingDailog.show();
         getUser();
-        String url = NetworkUtils.returnUrlForAvatar() + NetworkUtils.returnGetPath();
+//        String url = NetworkUtils.returnUrlForAvatar() + NetworkUtils.returnGetPath();
+        String url = NetworkUtils.returnUrlForAvatar() + "/uploadCanva.php";
         Log.d("url==>>>>", url);
         File file = new File(fileSrc);
         Log.d("file==.....>>>", String.valueOf(file.length() / 8 / 1024) + "kb");
+        String base64Img = imageToBase64(fileSrc);
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        try {
-            params.put("face", file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        params.put("face", base64Img);
         client.post(url, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -565,4 +571,35 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         innerIntent.putExtra("outputFormat", Bitmap.CompressFormat.JPEG.toString());
         startActivityForResult(innerIntent, REQUEST_CROP_IMAGE);
     }
+
+    public static String imageToBase64(String path) {
+        if (TextUtils.isEmpty(path)) {
+            return null;
+        }
+        InputStream is = null;
+        byte[] data = null;
+        String result = null;
+        try {
+            is = new FileInputStream(path);
+            //创建一个字符流大小的数组。
+            data = new byte[is.available()];
+            //写入数组
+            is.read(data);
+            //用默认的编码格式进行编码
+            result = Base64.encodeToString(data, Base64.DEFAULT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+        return result;
+    }
+
 }

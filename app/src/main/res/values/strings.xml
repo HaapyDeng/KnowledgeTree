@@ -65,6 +65,7 @@
     <string name="clear_over">已清除缓存</string>
     <string name="no_cache">目前没有缓存可清除</string>
     <string name="download_new_version">下载最新版本</string>
+    <string name="system_avator">系统头像</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
