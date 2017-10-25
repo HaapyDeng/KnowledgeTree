@@ -1,6 +1,8 @@
 package com.max_plus.knowledgetree.activity;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -10,9 +12,19 @@ import android.widget.LinearLayout;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
 import com.ashokvarma.bottomnavigation.BottomNavigationItem;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.max_plus.knowledgetree.R;
+import com.max_plus.knowledgetree.tools.AllToast;
+import com.max_plus.knowledgetree.tools.NetworkUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import cz.msebera.android.httpclient.Header;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
 
@@ -21,8 +33,10 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
     private LinearLayout mFrameLayout;
     private TreeFragment mTreeFragment;
     private SelfTestFragment mSelfTestFragment;
+    private SelfTestedFragment mselfTestedFragment;
     private MyFragment mMyFragment;
     private FindFragment mFindFragment;
+    private String userName, password, token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,42 +86,84 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
     @Override
     public void onTabSelected(int position) {
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         switch (position) {
             case 0:
                 if (mTreeFragment == null) {
                     mTreeFragment = TreeFragment.newInstance("1");
                 }
-                transaction.replace(R.id.fragment_container, mTreeFragment);
+                transaction.replace(R.id.fragment_container, mTreeFragment).commit();
                 break;
             case 1:
-                if (mSelfTestFragment == null) {
-                    mSelfTestFragment = SelfTestFragment.newInstance();
+                //判断网络是否正常
+                if (NetworkUtils.checkNetWork(this) == false) {
+                    AllToast.doToast(HomeActivity.this, getString(R.string.isNotNetWork));
+                    return;
                 }
-                transaction.replace(R.id.fragment_container, mSelfTestFragment);
+                SharedPreferences sp = this.getSharedPreferences("user", Activity.MODE_PRIVATE);
+                userName = sp.getString("username", "");
+                password = sp.getString("password", "");
+                token = sp.getString("token", "");
+                String url = NetworkUtils.returnUrl() + NetworkUtils.returnSelfTestHistory() + "?token=" + token;
+                Log.d("url ==>>", url);
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.get(url, null, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        Log.d("response==>>", response.toString());
+                        try {
+                            Log.d("code==>>", "" + response.getInt("code"));
+                            if (response.getInt("code") == 0) {
+                                JSONObject dateObject = (JSONObject) response.get("data");
+                                JSONArray jsonArray = dateObject.getJSONArray("list");
+                                Log.d("list===>>>", jsonArray.toString());
+                                if (jsonArray.length() == 0) {
+
+                                    if (mSelfTestFragment == null) {
+                                        mSelfTestFragment = SelfTestFragment.newInstance();
+                                    }
+                                    transaction.replace(R.id.fragment_container, mSelfTestFragment).commit();
+                                } else {
+                                    if (mselfTestedFragment == null) {
+                                        mselfTestedFragment = SelfTestedFragment.newInstance();
+                                    }
+                                    transaction.replace(R.id.fragment_container, mselfTestedFragment).commit();
+                                }
+                            } else {
+                                AllToast.doToast(HomeActivity.this, getString(R.string.sever_busy));
+                                return;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        AllToast.doToast(HomeActivity.this, getString(R.string.sever_busy));
+                        return;
+                    }
+                });
+
                 break;
             case 2:
                 if (mFindFragment == null) {
                     mFindFragment = FindFragment.newInstance("", "");
                 }
-                transaction.replace(R.id.fragment_container, mFindFragment);
+                transaction.replace(R.id.fragment_container, mFindFragment).commit();
                 break;
             case 3:
                 if (mMyFragment == null) {
                     mMyFragment = MyFragment.newInstance();
                 }
-                transaction.replace(R.id.fragment_container, mMyFragment);
-                break;
-            default:
-                if (mTreeFragment == null) {
-                    mTreeFragment = TreeFragment.newInstance("1");
-                }
-                transaction.replace(R.id.fragment_container, mTreeFragment);
+                transaction.replace(R.id.fragment_container, mMyFragment).commit();
                 break;
         }
-        transaction.commit();
 
     }
+
 
     @Override
     public void onTabUnselected(int position) {

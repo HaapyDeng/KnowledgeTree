@@ -54,6 +54,7 @@ import java.net.URL;
 import cz.msebera.android.httpclient.Header;
 
 import static android.app.Activity.RESULT_OK;
+import static com.max_plus.knowledgetree.tools.AllToast.doToast;
 import static com.max_plus.knowledgetree.tools.FaceUtil.GALLERY;
 import static com.max_plus.knowledgetree.tools.FaceUtil.REQUEST_CAMERA_IMAGE;
 import static com.max_plus.knowledgetree.tools.FaceUtil.REQUEST_CROP_IMAGE;
@@ -117,6 +118,11 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 
     //获取个人信息
     private void initDate() {
+        //判断网络是否正常
+        if (NetworkUtils.checkNetWork(getActivity()) == false) {
+            doToast(getActivity(), getResources().getString(R.string.isNotNetWork));
+            return;
+        }
         getUser();
         String url = NetworkUtils.returnUrl() + NetworkUtils.returnUserInfoApi() + "?token=" + token;
         Log.d("url..>>", url);
@@ -493,6 +499,11 @@ public class MyFragment extends Fragment implements View.OnClickListener {
      * @param fileSrc
      */
     private void doUploadAvatar(final ImageView imageView, final Bitmap mImage, String fileSrc) {
+        //判断网络是否正常
+        if (NetworkUtils.checkNetWork(getActivity()) == false) {
+            doToast(getActivity(), getResources().getString(R.string.isNotNetWork));
+            return;
+        }
         loadingDailog = LoadingDailog.LoadingDailog(getActivity(), getString(R.string.upload_avatar));
         loadingDailog.show();
         getUser();

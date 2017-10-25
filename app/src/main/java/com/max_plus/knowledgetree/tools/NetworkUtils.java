@@ -160,53 +160,59 @@ public class NetworkUtils {
         return "/ghshun/member/reset";
     }
 
-    //获取省份列表
-    public static String returnGetProvinceApi() {
-        return "/common/getprovince";
-    }
-
-    //获取省市下面城市列表
-    public static String returnGetCityApi() {
-        return "/common/getcity";
-    }
-
-    //获取区县列表
-    public static String returnGetDistrict() {
-        return "/common/getdistrict";
-    }
-
-    //获取学校名称
-    public static String returnGetSchoolname() {
-        return "/common/getschool";
-    }
-
-    //获取寒暑假课程列表
-    public static String returnHSCourseList() {
-        return "/mycourse/index";
-    }
-
-    //获取课程版本列表
-    public static String returnCourseVsionList() {
-        return "/mycourse/index";
-    }
-
-    //获取测验列表
-    public static String returnQuizList() {
-        return "/mycourse/quizlist";
-    }
-
-    //获取答题题目
-    public static String returnQuestions() {
-        return "/write/index";
-    }
-
-    //获取同步练习列表
-    public static String returnSyncList() {
-        return "/mycourse/practice";
-    }
-
-    //保存答案
-    public static String returnSaveAnswer() {
-        return "/write/set-api-answer";
+    //获取自测历史
+    public static String returnSelfTestHistory() {
+        return "/retrieval/history";
     }
 }
+
+//    //获取省份列表
+//    public static String returnGetProvinceApi() {
+//        return "/common/getprovince";
+//    }
+//
+//    //获取省市下面城市列表
+//    public static String returnGetCityApi() {
+//        return "/common/getcity";
+//    }
+//
+//    //获取区县列表
+//    public static String returnGetDistrict() {
+//        return "/common/getdistrict";
+//    }
+//
+//    //获取学校名称
+//    public static String returnGetSchoolname() {
+//        return "/common/getschool";
+//    }
+//
+//    //获取寒暑假课程列表
+//    public static String returnHSCourseList() {
+//        return "/mycourse/index";
+//    }
+//
+//    //获取课程版本列表
+//    public static String returnCourseVsionList() {
+//        return "/mycourse/index";
+//    }
+//
+//    //获取测验列表
+//    public static String returnQuizList() {
+//        return "/mycourse/quizlist";
+//    }
+//
+//    //获取答题题目
+//    public static String returnQuestions() {
+//        return "/write/index";
+//    }
+//
+//    //获取同步练习列表
+//    public static String returnSyncList() {
+//        return "/mycourse/practice";
+//    }
+//
+//    //保存答案
+//    public static String returnSaveAnswer() {
+//        return "/write/set-api-answer";
+//    }
+//}
