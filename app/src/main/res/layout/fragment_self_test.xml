@@ -1,13 +1,103 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.max_plus.knowledgetree.activity.SelfTestFragment">
 
+    <LinearLayout
+        android:id="@+id/ll_0"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#FF37C9CE"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:text="@string/knowledge_tree"
+            android:textColor="#FFFFFFFF"
+            android:textSize="18dp" />
+    </LinearLayout>
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="还没进行过自测" />
+        android:id="@+id/tv_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@+id/ll_0"
+        app:layout_heightPercent="12.5%"
+        app:layout_widthPercent="100%" />
 
-</FrameLayout>
+    <ImageView
+        android:id="@+id/iv_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_1"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/signin_img_succes" />
+
+    <TextView
+        android:id="@+id/tv_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/iv_2"
+        app:layout_heightPercent="5%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_3"
+        android:gravity="center"
+        android:text="@string/no_test"
+        android:textColor="#FF353535"
+        android:textSize="24dp"
+        app:layout_heightPercent="5%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_4"
+        app:layout_heightPercent="2%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_6"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_5"
+        android:gravity="center"
+        android:text="@string/good_for_test"
+        android:textColor="#FF17B3B9"
+        android:textSize="18dp"
+        app:layout_heightPercent="5%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_7"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_6"
+        app:layout_heightPercent="5%"
+        app:layout_widthPercent="100%" />
+
+    <Button
+        android:id="@+id/start_test"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_7"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/shape_corner_blue"
+        android:text="@string/testing_start"
+        android:textColor="#FFFFFFFF"
+        android:textSize="18dp"
+        app:layout_heightPercent="7.5%"
+        app:layout_widthPercent="100%" />
+
+</android.support.percent.PercentRelativeLayout>

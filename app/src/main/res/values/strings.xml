@@ -67,6 +67,9 @@
     <string name="download_new_version">下载最新版本</string>
     <string name="system_avator">系统头像</string>
     <string name="no_net">网络连接失败哦，进入知识黑洞了！</string>
+    <string name="no_test">主人还没有自测评价</string>
+    <string name="good_for_test">自测的好处？</string>
+    <string name="testing_start">立即开始自测</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
