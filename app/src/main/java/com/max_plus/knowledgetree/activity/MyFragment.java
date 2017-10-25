@@ -324,10 +324,16 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 
         }
         //拍照
-        if (requestCode == REQUEST_CAMERA_IMAGE && resultCode == RESULT_OK
-                ) {
+        if (requestCode == REQUEST_CAMERA_IMAGE && resultCode == RESULT_OK) {
 
             dealPic(getActivity(), takePhoto, REQUEST_CAMERA_IMAGE, RESULT_OK, data);
+
+        }
+        //选取系统头像
+        if (requestCode == CHOOSE_SYSTEM_PICTURE && resultCode == RESULT_OK) {
+            final Bundle sysExtras = data.getExtras();
+            Bitmap bitmapImg = BitmapFactory.decodeResource(this.getContext().getResources(), sysExtras.getInt("pictureid"));
+            doUploadAvatar(takePhoto, bitmapImg, null);
 
         }
 
@@ -374,6 +380,12 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                     String n = bundle.getString("nickName");
                     tv_nickName.setText(n);
                     break;
+                case 2:
+                    Bundle bundle1 = msg.getData();
+                    int pictureId = bundle1.getInt("pictureid");
+                    takePhoto.setImageResource(pictureId);
+                    break;
+
             }
         }
     };
@@ -487,12 +499,19 @@ public class MyFragment extends Fragment implements View.OnClickListener {
 //        String url = NetworkUtils.returnUrlForAvatar() + NetworkUtils.returnGetPath();
         String url = NetworkUtils.returnUrlForAvatar() + "/uploadCanva.php";
         Log.d("url==>>>>", url);
-        File file = new File(fileSrc);
-        Log.d("file==.....>>>", String.valueOf(file.length() / 8 / 1024) + "kb");
-        String base64Img = imageToBase64(fileSrc);
         AsyncHttpClient client = new AsyncHttpClient();
         RequestParams params = new RequestParams();
-        params.put("face", base64Img);
+        //判断是相册图片还是系统图片
+        if (mImage == null && fileSrc != null) {
+            File file = new File(fileSrc);
+            Log.d("file==.....>>>", String.valueOf(file.length() / 8 / 1024) + "kb");
+            String base64Img = imageToBase64(fileSrc);
+            params.put("face", base64Img);
+        } else if (mImage != null) {
+            String base64 = bitmapToBase64(mImage);
+            params.put("face", base64);
+        }
+
         client.post(url, params, new JsonHttpResponseHandler() {
 
             @Override
@@ -572,6 +591,12 @@ public class MyFragment extends Fragment implements View.OnClickListener {
         startActivityForResult(innerIntent, REQUEST_CROP_IMAGE);
     }
 
+    /**
+     * 传入path路径转成base64
+     *
+     * @param path
+     * @return
+     */
     public static String imageToBase64(String path) {
         if (TextUtils.isEmpty(path)) {
             return null;
@@ -598,6 +623,42 @@ public class MyFragment extends Fragment implements View.OnClickListener {
                 }
             }
 
+        }
+        return result;
+    }
+
+    /**
+     * bitmap转成base64
+     *
+     * @param bitmap
+     * @return
+     */
+    public static String bitmapToBase64(Bitmap bitmap) {
+
+        String result = null;
+        ByteArrayOutputStream baos = null;
+        try {
+            if (bitmap != null) {
+                baos = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+
+                baos.flush();
+                baos.close();
+
+                byte[] bitmapBytes = baos.toByteArray();
+                result = Base64.encodeToString(bitmapBytes, Base64.DEFAULT);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (baos != null) {
+                    baos.flush();
+                    baos.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return result;
     }

@@ -1,6 +1,7 @@
 package com.max_plus.knowledgetree.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,9 +20,12 @@ import java.util.Map;
 public class SystemPictureActivity extends Activity {
     private GridView systemGridView;
     private ImageView iv_back;
-    private int[] pictures = new int[]{R.drawable.tabbar_ic_my_pressed, R.drawable.tabbar_ic_my_pressed, R.drawable.tabbar_ic_my_pressed,
-            R.drawable.tabbar_ic_my_pressed, R.drawable.tabbar_ic_my_pressed, R.drawable.tabbar_ic_my_pressed
-            , R.drawable.tabbar_ic_my_pressed, R.drawable.tabbar_ic_my_pressed, R.drawable.tabbar_ic_my_pressed};
+    private int[] pictures = new int[]{R.drawable.system_img01, R.drawable.system_img02, R.drawable.system_img03,
+            R.drawable.system_img04, R.drawable.system_img05, R.drawable.system_img06
+            , R.drawable.system_img07, R.drawable.system_img08, R.drawable.system_img09,
+            R.drawable.system_img10, R.drawable.system_img11, R.drawable.system_img12,
+            R.drawable.system_img14, R.drawable.system_img15};
+    private int picture = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +38,13 @@ public class SystemPictureActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Log.d("你点击了：", "" + position + ":" + id + ":" + view.toString());
-
+                picture = pictures[position];
+                Intent intent = getIntent();
+                Bundle bundle = new Bundle();
+                bundle.putInt("pictureid", picture);//添加要返回给页面1的数据
+                intent.putExtras(bundle);
+                setResult(Activity.RESULT_OK, intent);//返回页面1
+                finish();
             }
         });
     }
