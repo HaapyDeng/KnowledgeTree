@@ -74,6 +74,7 @@ public class GoodTestActivity extends Activity implements ViewPager.OnPageChange
         vpAdapter = new TestSelfViewPagerAdapter(views, this);
         vp = findViewById(R.id.viewpager);
         vp.setAdapter(vpAdapter);
+        vp.setOffscreenPageLimit(views.size());// 加载缓存的页面个数
         // 绑定回调
         vp.setOnPageChangeListener(this);
     }
@@ -111,12 +112,12 @@ public class GoodTestActivity extends Activity implements ViewPager.OnPageChange
 
     @Override
     public void onPageSelected(int position) {
-
+        // 设置底部小点选中状态
+        setCurrentDot(position);
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        // 设置底部小点选中状态
-        setCurrentDot(state);
+
     }
 }
