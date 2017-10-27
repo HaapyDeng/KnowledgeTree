@@ -70,6 +70,13 @@
     <string name="no_test">主人还没有自测评价</string>
     <string name="good_for_test">自测的好处？</string>
     <string name="testing_start">立即开始自测</string>
+    <string name="self_test_get">自测获得</string>
+    <string name="self_test_guide_test1">提分目标越来越准</string>
+    <string name="self_test_guide_test11">细分到每一周每一天，量化到题。为主人量身打造实用知识点进阶计划。</string>
+    <string name="self_test_guide_test2">细化知识点学习</string>
+    <string name="self_test_guide_test22">未掌握的循序渐进，已掌握的变式提高。每日、每周提分成果可见可达。</string>
+    <string name="self_test_guide_test3">全面升学能力评估</string>
+    <string name="self_test_guide_test33">每达成一次进步，每进行一次测验，主人将实时了解自己在班级、地区的竞争优势。</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

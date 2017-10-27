@@ -73,8 +73,16 @@
         <activity
             android:name=".activity.AboutActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.CheckUpdateActivity" />
-        <activity android:name=".activity.SystemPictureActivity"></activity>
+        <activity
+            android:name=".activity.CheckUpdateActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SystemPictureActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.GoodTestActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".activity.TestSettingActivity"></activity>
     </application>
 
 </manifest>
