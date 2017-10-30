@@ -23,7 +23,10 @@ public class InputScorePopWin extends PopupWindow {
     private TextView tv_characters, tv_confirm;
     private EditText et_score;
     private View mMenuView;
-    public static String score;
+    public String score;
+
+
+    private String ss;
 
 
     public InputScorePopWin(Activity context, View.OnClickListener itemsOnClick) {
@@ -41,13 +44,12 @@ public class InputScorePopWin extends PopupWindow {
         et_score.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                score = et_score.getText().toString().trim();
-                int len = score.length();
+                ss = et_score.getText().toString().trim();
+                int len = ss.length();
                 if (len == 0) {
                     tv_characters.setText(R.string.three_characters);
                 } else if (len == 1) {

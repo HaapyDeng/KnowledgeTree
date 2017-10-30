@@ -164,6 +164,11 @@ public class NetworkUtils {
     public static String returnSelfTestHistory() {
         return "/retrieval/history";
     }
+
+    //获取自测提设置参数
+    public static String returnSelfTestParams() {
+        return "/self-test/add";
+    }
 }
 
 //    //获取省份列表
