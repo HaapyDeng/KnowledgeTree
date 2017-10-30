@@ -2,6 +2,8 @@ package com.max_plus.knowledgetree.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,6 +22,7 @@ import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
 import com.max_plus.knowledgetree.tools.InputGradeAndCountPopWin;
 import com.max_plus.knowledgetree.tools.InputScorePopWin;
@@ -204,6 +207,55 @@ public class TestSettingActivity extends Activity implements View.OnClickListene
                 });
                 break;
             case R.id.btn_start_test:
+                //判断网络是否正常
+                if (NetworkUtils.checkNetWork(this) == false) {
+                    doToast(this, getResources().getString(R.string.isNotNetWork));
+                    return;
+                }
+                SharedPreferences sp = getSharedPreferences("user", Activity.MODE_PRIVATE);
+                String token = sp.getString("token", "");
+                String url = NetworkUtils.returnUrl() + NetworkUtils.returnSelfTestId() + "?token=" + token;
+                Log.d("url ===>", url);
+                RequestParams params = new RequestParams();
+                params.put("course_id", courseId);
+                params.put("grade_id", gradeId);
+                params.put("count", count);
+                params.put("fraction", Integer.parseInt(score));
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.post(url, params, new JsonHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        Log.d("response==>>>", response.toString());
+                        try {
+                            int code = response.getInt("code");
+                            if (code == 0) {
+                                int id = response.getJSONObject("data").getInt("id");
+                                Intent questionIntent = new Intent();
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("id", id);
+                                bundle.putInt("count", count);
+                                questionIntent.putExtras(bundle);
+                                questionIntent.setClass(TestSettingActivity.this, SelfTestQuestionsActivity.class);
+                                startActivity(questionIntent);
+                                Log.d("id===>>>>>", "" + id);
+                            } else {
+                                doToast(TestSettingActivity.this, getResources().getString(R.string.sever_busy));
+                                return;
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                        super.onFailure(statusCode, headers, responseString, throwable);
+                        doToast(TestSettingActivity.this, getResources().getString(R.string.sever_busy));
+                        return;
+                    }
+                });
 
                 break;
         }

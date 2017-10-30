@@ -169,6 +169,15 @@ public class NetworkUtils {
     public static String returnSelfTestParams() {
         return "/self-test/add";
     }
+
+    //自测组卷获取组卷id接口
+    public static String returnSelfTestId() {
+        return "/self-test/update";
+    }
+
+    public static String returnSelfTestQuestion() {
+        return "/self-test/question";
+    }
 }
 
 //    //获取省份列表

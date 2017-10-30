@@ -82,7 +82,12 @@
         <activity
             android:name=".activity.GoodTestActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".activity.TestSettingActivity"></activity>
+        <activity
+            android:name=".activity.TestSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SelfTestQuestionsActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

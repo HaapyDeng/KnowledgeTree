@@ -94,6 +94,7 @@
     <string name="choose_grade">选择年级</string>
     <string name="choose_count">选择题量</string>
     <string name="over">完成</string>
+    <string name="self_answer">自测答题</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

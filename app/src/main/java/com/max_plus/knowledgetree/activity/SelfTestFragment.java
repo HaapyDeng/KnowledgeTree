@@ -57,6 +57,9 @@ public class SelfTestFragment extends Fragment implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.start_test:
+                Intent testIntent = new Intent();
+                testIntent.setClass(getActivity(), TestSettingActivity.class);
+                startActivity(testIntent);
                 break;
         }
     }
