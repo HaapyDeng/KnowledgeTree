@@ -88,6 +88,7 @@
         <activity
             android:name=".activity.SelfTestQuestionsActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".activity.TestEndActivity"></activity>
     </application>
 
 </manifest>

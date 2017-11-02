@@ -178,6 +178,11 @@ public class NetworkUtils {
     public static String returnSelfTestQuestion() {
         return "/self-test/question";
     }
+
+    //自測完成最後一次提交
+    public static  String returnSelfTestEnd(){
+        return "/self-test/end";
+    }
 }
 
 //    //获取省份列表
