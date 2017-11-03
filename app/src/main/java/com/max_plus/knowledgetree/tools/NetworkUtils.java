@@ -183,6 +183,11 @@ public class NetworkUtils {
     public static String returnSelfTestEnd() {
         return "/self-test/end";
     }
+
+    //获取报告统计接口
+    public static String returnReportInfo() {
+        return "/retrieval/statistics";
+    }
 }
 
 //    //获取省份列表

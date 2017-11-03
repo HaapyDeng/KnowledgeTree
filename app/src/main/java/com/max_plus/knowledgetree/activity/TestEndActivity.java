@@ -15,11 +15,15 @@ public class TestEndActivity extends Activity implements View.OnClickListener {
     private ImageView iv_back;
     private TextView tv_auto_enter;
     private Button start_test_info;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test_end);
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        id = bundle.getInt("id");
         iv_back = findViewById(R.id.iv_back);
         iv_back.setOnClickListener(this);
 
@@ -40,6 +44,7 @@ public class TestEndActivity extends Activity implements View.OnClickListener {
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
                 bundle.putInt("start", 1);
+                bundle.putInt("id", id);
                 intent.putExtras(bundle);
                 intent.setClass(this, HomeActivity.class);
                 startActivity(intent);
@@ -60,6 +65,7 @@ public class TestEndActivity extends Activity implements View.OnClickListener {
             Intent intent = new Intent();
             Bundle bundle = new Bundle();
             bundle.putInt("start", 1);
+            bundle.putInt("id", id);
             intent.putExtras(bundle);
             intent.setClass(TestEndActivity.this, HomeActivity.class);
             startActivity(intent);

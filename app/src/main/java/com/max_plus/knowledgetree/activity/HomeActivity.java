@@ -34,6 +34,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
     private MyFragment mMyFragment;
     private FindFragment mFindFragment;
     private String userName, password, token;
+    public static int batchid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +57,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
                 .setInActiveColor("#FF000000")
                 .initialise();
         setDefaultFragment();
-//        getFragments();
     }
-
-//    private ArrayList<Fragment> getFragments() {
-//        ArrayList<Fragment> fragments = new ArrayList<>();
-//        fragments.add(TreeFragment.newInstance("", ""));
-//        fragments.add(SelfTestStartFragment.newInstance());
-//        fragments.add(FindFragment.newInstance("", ""));
-//        fragments.add(MyFragment.newInstance());
-//        return fragments;
-//    }
 
 
     /**
@@ -121,6 +112,9 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
                                     }
                                     transaction.replace(R.id.fragment_container, mSelfTestFragment).commit();
                                 } else {
+                                    JSONObject object0 = jsonArray.getJSONObject(0);
+                                    batchid = object0.getInt("batchid");
+                                    Log.d("batchid==>>>>", "" + batchid);
                                     if (mselfTestInfoFragment == null) {
                                         mselfTestInfoFragment = SelfTestInfoFragment.newInstance();
                                     }
@@ -185,6 +179,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         int i = bundle.getInt("start");
+
         Log.d("i===>>>>", "" + i);
         if (i == 1) {
             InitNavigationBar();
