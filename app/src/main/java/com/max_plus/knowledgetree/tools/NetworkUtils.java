@@ -99,8 +99,8 @@ public class NetworkUtils {
 
     //服务器端主路径
     public static String returnUrl() {
-        String url = "http://zssapi.sostudy.cn";
-//        String url = "http://192.168.1.21/api";
+        String url = "http://zssapi.sostudy.cn";//线上
+//        String url = "http://192.168.1.119:81";//线下
         return url;
 
     }
@@ -180,7 +180,7 @@ public class NetworkUtils {
     }
 
     //自測完成最後一次提交
-    public static  String returnSelfTestEnd(){
+    public static String returnSelfTestEnd() {
         return "/self-test/end";
     }
 }

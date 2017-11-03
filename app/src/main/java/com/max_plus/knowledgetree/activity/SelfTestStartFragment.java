@@ -13,15 +13,15 @@ import android.widget.TextView;
 import com.max_plus.knowledgetree.R;
 
 
-public class SelfTestFragment extends Fragment implements View.OnClickListener {
+public class SelfTestStartFragment extends Fragment implements View.OnClickListener {
     private View mRootView;
     private TextView tv_goodTest;
     private Button start_test;
     private Context mContext = this.getActivity();
 
 
-    public static SelfTestFragment newInstance() {
-        SelfTestFragment fragment = new SelfTestFragment();
+    public static SelfTestStartFragment newInstance() {
+        SelfTestStartFragment fragment = new SelfTestStartFragment();
         return fragment;
     }
 

@@ -1,9 +1,109 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.max_plus.knowledgetree.activity.TestEndActivity">
+    android:layout_height="match_parent">
 
-</android.support.constraint.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/ll_1"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#FF37C9CE"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16dp"
+            android:background="@drawable/common_ic_exit" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="16.3dp"
+            android:background="#1F000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="20dp"
+            android:gravity="center"
+            android:text="@string/self_answer"
+            android:textColor="#FFFFFFFF"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@+id/ll_0"
+        app:layout_heightPercent="12.5%"
+        app:layout_widthPercent="100%" />
+
+    <ImageView
+        android:id="@+id/iv_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_1"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/common_img_finished" />
+
+    <TextView
+        android:id="@+id/tv_3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/iv_2"
+        app:layout_heightPercent="5%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_3"
+        android:gravity="center"
+        android:text="@string/answer_all"
+        android:textColor="#FF353535"
+        android:textSize="24dp"
+        app:layout_heightPercent="10%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_auto_enter"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_4"
+        android:layout_marginLeft="81dp"
+        android:layout_marginRight="81dp"
+        android:gravity="center"
+        android:textColor="#61000000"
+        android:textSize="14dp"
+        app:layout_heightPercent="5%"
+        app:layout_widthPercent="100%" />
+
+    <TextView
+        android:id="@+id/tv_7"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_auto_enter"
+        app:layout_heightPercent="10%"
+        app:layout_widthPercent="100%" />
+
+    <Button
+        android:id="@+id/start_test_info"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/tv_7"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/shape_corner_blue"
+        android:text="@string/look_test_info"
+        android:textColor="#FFFFFFFF"
+        android:textSize="18dp"
+        app:layout_heightPercent="7.5%"
+        app:layout_widthPercent="100%" />
+
+</android.support.percent.PercentRelativeLayout>

@@ -12,18 +12,18 @@ import com.max_plus.knowledgetree.R;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SelfTestedFragment extends Fragment {
+public class SelfTestInfoFragment extends Fragment {
 
 
-    public SelfTestedFragment() {
+    public SelfTestInfoFragment() {
         // Required empty public constructor
     }
 
-    public static SelfTestedFragment newInstance() {
+    public static SelfTestInfoFragment newInstance() {
         
         Bundle args = new Bundle();
         
-        SelfTestedFragment fragment = new SelfTestedFragment();
+        SelfTestInfoFragment fragment = new SelfTestInfoFragment();
         fragment.setArguments(args);
         return fragment;
     }

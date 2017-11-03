@@ -95,6 +95,9 @@
     <string name="choose_count">选择题量</string>
     <string name="over">完成</string>
     <string name="self_answer">自测答题</string>
+    <string name="answer_all">真棒！全部答完了！</string>
+    <string name="five_auto_enter">5s自动进入</string>
+    <string name="look_test_info">查看自测统计</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

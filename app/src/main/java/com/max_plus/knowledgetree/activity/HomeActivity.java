@@ -1,13 +1,12 @@
 package com.max_plus.knowledgetree.activity;
 
 import android.app.Activity;
-import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.ashokvarma.bottomnavigation.BottomNavigationBar;
@@ -22,8 +21,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-
 import cz.msebera.android.httpclient.Header;
 
 public class HomeActivity extends AppCompatActivity implements BottomNavigationBar.OnTabSelectedListener {
@@ -32,8 +29,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
 
     private LinearLayout mFrameLayout;
     private TreeFragment mTreeFragment;
-    private SelfTestFragment mSelfTestFragment;
-    private SelfTestedFragment mselfTestedFragment;
+    private SelfTestStartFragment mSelfTestFragment;
+    private SelfTestInfoFragment mselfTestInfoFragment;
     private MyFragment mMyFragment;
     private FindFragment mFindFragment;
     private String userName, password, token;
@@ -42,7 +39,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        InitNavigationBar();
+
     }
 
     private void InitNavigationBar() {
@@ -56,7 +53,6 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
                 .addItem(new BottomNavigationItem(R.drawable.tabbar_icon_test_default, getResources().getString(R.string.test_self)).setActiveColor("#FF37C9CE"))
                 .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_fund_efault, getResources().getString(R.string.find)).setActiveColor("#FF37C9CE"))
                 .addItem(new BottomNavigationItem(R.drawable.tabbar_ic_my_default, getResources().getString(R.string.my)).setActiveColor("#FF37C9CE"))
-                .setFirstSelectedPosition(0)
                 .setInActiveColor("#FF000000")
                 .initialise();
         setDefaultFragment();
@@ -66,7 +62,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
 //    private ArrayList<Fragment> getFragments() {
 //        ArrayList<Fragment> fragments = new ArrayList<>();
 //        fragments.add(TreeFragment.newInstance("", ""));
-//        fragments.add(SelfTestFragment.newInstance());
+//        fragments.add(SelfTestStartFragment.newInstance());
 //        fragments.add(FindFragment.newInstance("", ""));
 //        fragments.add(MyFragment.newInstance());
 //        return fragments;
@@ -121,14 +117,15 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
                                 if (jsonArray.length() == 0) {
 
                                     if (mSelfTestFragment == null) {
-                                        mSelfTestFragment = SelfTestFragment.newInstance();
+                                        mSelfTestFragment = SelfTestStartFragment.newInstance();
                                     }
                                     transaction.replace(R.id.fragment_container, mSelfTestFragment).commit();
                                 } else {
-                                    if (mselfTestedFragment == null) {
-                                        mselfTestedFragment = SelfTestedFragment.newInstance();
+                                    if (mselfTestInfoFragment == null) {
+                                        mselfTestInfoFragment = SelfTestInfoFragment.newInstance();
                                     }
-                                    transaction.replace(R.id.fragment_container, mselfTestedFragment).commit();
+                                    transaction.replace(R.id.fragment_container, mselfTestInfoFragment).commit();
+
                                 }
                             } else {
                                 AllToast.doToast(HomeActivity.this, getString(R.string.sever_busy));
@@ -173,5 +170,43 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
     @Override
     public void onTabReselected(int position) {
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.d("onPause...", "start!!!!");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//如果是自测完了过后再跳入Home，则i=1
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        int i = bundle.getInt("start");
+        Log.d("i===>>>>", "" + i);
+        if (i == 1) {
+            InitNavigationBar();
+            mBottomNavigationBar.selectTab(1);
+        } else {
+            InitNavigationBar();
+            mBottomNavigationBar.selectTab(0);
+        }
+
+        Log.d("onResume...", "start!!!!");
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        Log.d("onRestart...", "start!!!!");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d("onStart...", "start!!!!");
     }
 }

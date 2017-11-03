@@ -146,6 +146,9 @@ public class LoginActivity extends Activity implements View.OnClickListener {
                             edit.putString("password", password);
                             edit.commit();
                             Intent intent = new Intent();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("start",0);
+                            intent.putExtras(bundle);
                             intent.setClass(LoginActivity.this, HomeActivity.class);
                             startActivity(intent);
                             finish();
@@ -167,8 +170,8 @@ public class LoginActivity extends Activity implements View.OnClickListener {
             @Override
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                 super.onFailure(statusCode, headers, throwable, errorResponse);
-                Log.d("code==>>", String.valueOf(statusCode));
-                Log.d("response==>>", errorResponse.toString());
+                doToast(LoginActivity.this, getResources().getString(R.string.sever_busy));
+                return;
             }
         });
     }

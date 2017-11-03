@@ -20,6 +20,7 @@ import com.loopj.android.http.RequestParams;
 import com.max_plus.knowledgetree.R;
 import com.max_plus.knowledgetree.tools.NetworkUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +30,7 @@ import static com.max_plus.knowledgetree.tools.AllToast.doToast;
 
 public class SelfTestQuestionsActivity extends Activity implements View.OnClickListener {
     private int id, count, state = 0, current_count = 1;
-    private String exerciseId, answer, content;
+    private String exerciseId, answer, content, token;
     private ImageView iv_back;
     private WebView wb_webView;
     private TextView tv_current, tv_total, tv_choose_a, tv_choose_b, tv_choose_c, tv_choose_d;
@@ -80,7 +81,7 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
             return;
         }
         SharedPreferences sp = getSharedPreferences("user", Activity.MODE_PRIVATE);
-        String token = sp.getString("token", "");
+        token = sp.getString("token", "");
         String url = NetworkUtils.returnUrl() + NetworkUtils.returnSelfTestQuestion() + "?token=" + token + "&vid=" + id;
         Log.d("url ====>>>>", url);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -154,7 +155,7 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
                 time = millis_time / 1000;
                 Log.d("time==>>>", millis_time + ":" + time);
                 answer = "A";
-                doPostAndGetQuestion(id, exerciseId, answer, time, state);
+                doPostAndGetQuestion(id, exerciseId, answer, time, state, token);
                 Log.d("current_count===>>>", "" + current_count);
                 break;
             case R.id.tv_choose_b:
@@ -165,7 +166,7 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
                 time = millis_time / 1000;
                 Log.d("time==>>>", millis_time + ":" + time);
                 answer = "B";
-                doPostAndGetQuestion(id, exerciseId, answer, time, state);
+                doPostAndGetQuestion(id, exerciseId, answer, time, state, token);
                 Log.d("current_count===>>>", "" + current_count);
                 break;
             case R.id.tv_choose_c:
@@ -176,7 +177,7 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
                 time = millis_time / 1000;
                 Log.d("time==>>>", millis_time + ":" + time);
                 answer = "C";
-                doPostAndGetQuestion(id, exerciseId, answer, time, state);
+                doPostAndGetQuestion(id, exerciseId, answer, time, state, token);
                 Log.d("current_count===>>>", "" + current_count);
 
                 break;
@@ -189,12 +190,12 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
                 Log.d("time==>>>", millis_time + ":" + time);
                 answer = "D";
                 Log.d("current_count===>>>", "" + current_count);
-                doPostAndGetQuestion(id, exerciseId, answer, time, state);
+                doPostAndGetQuestion(id, exerciseId, answer, time, state, token);
                 break;
         }
     }
 
-    private void doEndGet(int id) {
+    private void doEndGet(final int id) {
         //判断网络是否正常
         if (NetworkUtils.checkNetWork(this) == false) {
             doToast(this, getResources().getString(R.string.isNotNetWork));
@@ -208,6 +209,19 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.d("response==>>>", response.toString());
+                try {
+                    int code = response.getInt("code");
+                    if (code == 0) {
+                        Intent sIntent = new Intent();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("id", id);
+                        sIntent.putExtras(bundle);
+                        sIntent.setClass(SelfTestQuestionsActivity.this, TestEndActivity.class);
+                        startActivity(sIntent);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
 
@@ -220,13 +234,13 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
         });
     }
 
-    private void doPostAndGetQuestion(int id, String eId, String answer, long time, int state) {
+    private void doPostAndGetQuestion(final int id, String eId, String answer, long time, int state, String token) {
         //判断网络是否正常
         if (NetworkUtils.checkNetWork(this) == false) {
             doToast(this, getResources().getString(R.string.isNotNetWork));
             return;
         }
-        String url = NetworkUtils.returnUrl() + NetworkUtils.returnSelfTestQuestion() + "?vid=" + id;
+        String url = NetworkUtils.returnUrl() + NetworkUtils.returnSelfTestQuestion() + "?token=" + token + "&vid=" + id;
         Log.d("url == >", url);
         RequestParams params = new RequestParams();
         params.put("id", eId);
@@ -242,12 +256,24 @@ public class SelfTestQuestionsActivity extends Activity implements View.OnClickL
                     int code = response.getInt("code");
                     Log.d("response===>>>", response.toString());
                     if (code == 0) {
-                        JSONObject data = response.getJSONObject("data");
-                        exerciseId = data.getString("id");
-                        content = data.getString("content");
-                        Message message = anserHandle.obtainMessage();
-                        message.what = WEB_VIEW;
-                        anserHandle.sendMessage(message);
+                        Object data1 = response.get("data");
+                        if (data1 instanceof JSONArray) {
+                            JSONArray data2 = response.getJSONArray("data");
+                            if (data2.length() == 0) {
+                                doEndGet(id);
+                            } else {
+                                doToast(SelfTestQuestionsActivity.this, getResources().getString(R.string.sever_busy));
+                                return;
+                            }
+
+                        } else {
+                            JSONObject data = response.getJSONObject("data");
+                            exerciseId = data.getString("id");
+                            content = data.getString("content");
+                            Message message = anserHandle.obtainMessage();
+                            message.what = WEB_VIEW;
+                            anserHandle.sendMessage(message);
+                        }
                     } else {
                         doToast(SelfTestQuestionsActivity.this, getResources().getString(R.string.sever_busy));
                         return;
