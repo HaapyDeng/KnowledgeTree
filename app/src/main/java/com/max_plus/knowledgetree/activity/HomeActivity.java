@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
+        InitNavigationBar();
     }
 
     private void InitNavigationBar() {
@@ -185,8 +185,8 @@ public class HomeActivity extends AppCompatActivity implements BottomNavigationB
             InitNavigationBar();
             mBottomNavigationBar.selectTab(1);
         } else {
-            InitNavigationBar();
-            mBottomNavigationBar.selectTab(0);
+//            InitNavigationBar();
+//            mBottomNavigationBar.selectTab(0);
         }
 
         Log.d("onResume...", "start!!!!");
